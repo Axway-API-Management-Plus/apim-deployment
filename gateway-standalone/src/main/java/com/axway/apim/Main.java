@@ -40,14 +40,14 @@ public class Main {
 
 		// deploy polenv
 //		args = new String[] { "--operation=deploy", "--gatewayURL=https://localhost:8090", "--username=admin",
-//				"--password=changeme", "--group=lambda", "--envFile=D:\\api\\lambda.env",
-//				"--polFile=D:\\api\\lambda.pol", "--type=polenv" };
+	//				"--password=changeme", "--group=lambda", "--envFile=D:\\api\\lambda.env",
+	//				"--polFile=D:\\api\\lambda.pol", "--type=polenv" };
 		
 		//deploy fed
 		
-		args = new String[] { "--operation=deploy", "--gatewayURL=https://localhost:8090", "--username=admin",
-				"--password=changeme", "--group=lambda", "--fedFile=D:\\api\\lambda.fed",
-				"--polFile=D:\\api\\lambda.pol", "--type=fed" };
+//		args = new String[] { "--operation=deploy", "--gatewayURL=https://localhost:8090", "--username=admin",
+//				"--password=changeme", "--group=lambda", "--fedFile=D:\\api\\lambda.fed",
+//				"--polFile=D:\\api\\lambda.pol", "--type=fed" };
 
 		Options options = options();
 
