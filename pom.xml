@@ -6,11 +6,8 @@
 	<version>${revision}</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>core</module>
-		<module>gateway-plugin</module>
-		<module>manager-plugin</module>
-		<module>gateway-standalone</module>
-		<module>manager-standalone</module>
+		<module>apim-deployment-samples</module>
+		<module>apim-deployment-project</module>
 	</modules>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
