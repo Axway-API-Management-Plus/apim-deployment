@@ -1,4 +1,4 @@
-package org.gateway.standalone;
+package com.axway.apim;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -22,6 +22,8 @@ public class Orchestrator {
 	private static String POLICY_ATTACHMENT_NAME = "policyFile";
 
 	private static String ENV_ATTACHMENT_NAME = "environmentFile";
+
+	private static String FED_ATTACHMENT_NAME = "file";
 
 	@Inject
 	private GatewayDeployment gatewayDeployment;
@@ -50,28 +52,31 @@ public class Orchestrator {
 	public void deploy(String url, String username, String password, String groupName, String instanceName, String type,
 			String fedFileName, String polFileName, String envFileName) {
 		try {
+			String archiveId = null;
+			gatewayDeployment.init(url, username, password);
+			String phyGroupName = gatewayDeployment.getPhycialGroupName(groupName, url);
+			List<String> servers = gatewayDeployment.getServerList(groupName, url, instanceName, phyGroupName);
 			gatewayDeployment.init(url, username, password);
 			if (type.equalsIgnoreCase("fed")) {
-				// gatewayDeployment.downloadFed(url, username, password,
-				// groupName, instanceName, fedFileName);
+
+				archiveId = gatewayDeployment.uploadFed(phyGroupName, FED_ATTACHMENT_NAME, url, fedFileName,
+						servers);
+
 			} else if (type.equalsIgnoreCase("polenv")) {
-				String phyGroupName = gatewayDeployment.getPhycialGroupName(groupName, url);
+
 				String relatedPolicyArchiveID = gatewayDeployment.uploadPolicy(phyGroupName, POLICY_ATTACHMENT_NAME,
 						url, polFileName);
-				String archiveId = gatewayDeployment.uploadEnv(phyGroupName, ENV_ATTACHMENT_NAME,
-						relatedPolicyArchiveID, url, envFileName);
-				
-				List<String> servers = gatewayDeployment.getServerList(groupName, url, instanceName, phyGroupName);
-				
-				for (String instanceId : servers) {
-					logger.info("Deploying to server {} starts",instanceId);
-					gatewayDeployment.deploy(archiveId, instanceId, url);
-					logger.info("Deploying to server {} complete",instanceId);
-				}
-				
-				
+				archiveId = gatewayDeployment.uploadEnv(phyGroupName, ENV_ATTACHMENT_NAME, relatedPolicyArchiveID, url,
+						envFileName);
 			}
-		} catch (ServerException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException | UnsupportedOperationException | URISyntaxException | IOException e) {
+			logger.info("Fed deployment Archive id : {}", archiveId);
+			for (String instanceId : servers) {
+				logger.info("Deploying to server {} starts", instanceId);
+				gatewayDeployment.deploy(archiveId, instanceId, url);
+				logger.info("Deploying to server {} complete", instanceId);
+			}
+		} catch (ServerException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException
+				| UnsupportedOperationException | URISyntaxException | IOException e) {
 			logger.error("Unable to download the deployment package : Reason {}", e);
 			System.exit(1);
 		}

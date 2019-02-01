@@ -1,4 +1,4 @@
-package org.manager.plugin;
+package com.axway.apim;
 
 /**
  * Hello world!

@@ -13,9 +13,11 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,6 +86,26 @@ public class GatewayDeployment {
 
 		HttpResponse response = axwayClient.postMultipart(uri, envFilePath, attachmentName);
 		logger.info("upload env complete");
+		return processResponse(response);
+	}
+
+	public String uploadFed(String phyGroupName, String attachmentName, String apiGatewayURL, String fedFilePath,
+			List<String> servers) throws IOException, URISyntaxException {
+
+		logger.info("Upload Fed start");
+		
+		
+		List<NameValuePair> serviceIds = new ArrayList<>();
+		for (String server : servers) {
+			NameValuePair nameValuePair = new BasicNameValuePair("serviceID", server);
+			serviceIds.add(nameValuePair);
+		}
+		
+		URI uri = new URIBuilder(apiGatewayURL).setPath("/api/deployment/group/configuration/file/" + phyGroupName).addParameters(serviceIds)
+				.build();
+		logger.info("Fed URL: " + uri.toString());
+		HttpResponse response = axwayClient.postMultipart(uri, fedFilePath, attachmentName);
+		logger.info("Upload fed complete");
 		return processResponse(response);
 	}
 

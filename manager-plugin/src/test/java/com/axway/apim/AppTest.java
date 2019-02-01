@@ -1,4 +1,4 @@
-package org.gateway.standalone;
+package com.axway.apim;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

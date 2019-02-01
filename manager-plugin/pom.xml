@@ -5,11 +5,9 @@
   <parent>
     <groupId>com.axway.apim</groupId>
     <artifactId>apim-deployment</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
-  <groupId>com.axway.apim</groupId>
   <artifactId>manager-plugin</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <name>manager-plugin</name>
   <url>http://maven.apache.org</url>
   <properties>
