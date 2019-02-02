@@ -12,6 +12,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
 @Mojo(name = "apigateway-export", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true)
+public class APIGatewayExportPlugin extends AbstractGatewayMojo implements Constants {
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
