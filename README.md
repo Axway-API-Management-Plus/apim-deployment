@@ -3,9 +3,18 @@ Axway APIM deployment standalone and maven plugin
 
 ## Prerequisites
 
-- Axway AMPLIFY API Management 7.5.3 or above
-- JDK 1.8.0_xxx
-- Apache Maven 3.3.9 or above 
+1. Axway AMPLIFY API Management 7.5.3 or above
+2. JDK 1.8.0_xxx
+3. Apache Maven 3.3.9 or above 
+4. Trust API Gateway Admin Node manager domain certificate
+
+- Download ANM certificate from browser
+- Import the certificate to java key store
+	
+	
+	```bash
+		keytool -import -trustcacerts -keystore "C:\Program Files\Java\jdk1.8.0_111\jre\lib\security\cacerts" -storepass changeit -alias domain -file c:\Users\rnatarajan\Desktop\domain.cer -noprompt
+	```	
 
 ### Build the project 
 
