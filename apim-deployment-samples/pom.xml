@@ -8,8 +8,8 @@
   <artifactId>apim-deployment-samples</artifactId>
   <packaging>pom</packaging>
   <modules>
-  	<module>gateway-plugin-download-fed</module>
-  	<module>gateway-plugin-download-polenv</module>
+  	<module>gateway-plugin-export-fed</module>
+  	<module>gateway-plugin-export-polenv</module>
   	<module>gateway-plugin-deploy-fed</module>
   	<module>gateway-plugin-deploy-polenv</module>
   </modules>

@@ -1,5 +1,11 @@
 package com.axway.apim;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.security.cert.CertificateException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -14,6 +20,7 @@ import org.slf4j.LoggerFactory;
 public class Main {
 
 	private static Logger logger = LoggerFactory.getLogger(Main.class);
+
 	public Main() {
 		// TODO Auto-generated constructor stub
 	}
@@ -24,6 +31,8 @@ public class Main {
 		// "--password=changeme", "--group=lambda",
 		// "--fedFile=D:\\api\\lambda.fed",
 		// "--polFile=D:\\api\\lambda.pol", "--type=fed" };
+
+		APIManagerWrapper apiManagerWrapper = new APIManagerWrapper();
 
 		Options options = options();
 
@@ -45,42 +54,67 @@ public class Main {
 		}
 
 		String operation = line.getOptionValue("operation");
-		String type = line.getOptionValue("type");
-
-		String url = line.getOptionValue("s");
+		String url = line.getOptionValue("url");
 		String username = line.getOptionValue("username");
 		String password = line.getOptionValue("password");
-		String groupName = line.getOptionValue("group");
+		String artifactLocation = line.getOptionValue("artifactlocation");
 
-		String fedFileName = null;
-		String polFileName = null;
-		String envFileName = null;
-		String instanceName = null;
+		String orgName = null;
+		String backendAuthJson = null;
+		String backendURL = null;
+		String outboundCertDir = null;
+		String apiName = null;
+		String apiVersion = null;
 
-		if (line.hasOption('n')) {
-			instanceName = line.getOptionValue("n");
-		}
-
-		if (type.equalsIgnoreCase("fed")) {
-			if (line.hasOption('f')) {
-				fedFileName = line.getOptionValue("f");
+		if (operation.equalsIgnoreCase("export")) {
+			if (line.hasOption('n')) {
+				apiName = line.getOptionValue("n");
 			} else {
-				logger.error("Provide fed location");
-				System.exit(1);
-			}
-		} else if (type.equals("polenv")) {
-			if (line.hasOption("pol")) {
-				polFileName = line.getOptionValue("pol");
-			} else {
-				logger.error("Provide policy location");
+				logger.error("Provide API Name");
 				System.exit(1);
 			}
 
-			if (line.hasOption('e')) {
-				envFileName = line.getOptionValue("e");
+			if (line.hasOption('v')) {
+				apiVersion = line.getOptionValue("v");
 			} else {
-				logger.error("Provide enviroment location");
+				logger.error("Provide API Version");
 				System.exit(1);
+			}
+			List<String> version = new ArrayList<>();
+			version.add(apiVersion);
+			logger.info("Exportig API {} with Version {}", apiName, apiVersion);
+			try {
+				apiManagerWrapper.exportAPIs(url, username, password, artifactLocation, apiName, version);
+			} catch (IOException e) {
+				logger.error("Export failed : {}", e);
+			}
+
+			logger.info("API Exported to location {}", artifactLocation);
+
+		} else if (operation.equals("deploy")) {
+			
+			if (line.hasOption('d')) {
+				orgName = line.getOptionValue("d");
+			} else {
+				logger.error("Provide Developer Organization Name");
+				System.exit(1);
+			}
+			
+			if (line.hasOption("bu")) {
+				backendURL = line.getOptionValue("bu");
+			}
+
+			if (line.hasOption("ba")) {
+				backendAuthJson = line.getOptionValue("ba");
+			}
+			if (line.hasOption("oc")) {
+				outboundCertDir = line.getOptionValue("oc");
+			}
+			
+			try {
+				apiManagerWrapper.importAPIs(url, username, password, artifactLocation, orgName, backendURL, outboundCertDir, backendAuthJson);
+			} catch (IOException | CertificateException e) {
+				logger.error("Deployment failed : {}", e);
 			}
 
 		} else {
@@ -88,7 +122,6 @@ public class Main {
 			System.exit(1);
 		}
 
-		
 	}
 
 	private static boolean checkForHelp(String[] args, Options options) throws ParseException {
@@ -109,52 +142,53 @@ public class Main {
 		Option help = Option.builder("h").longOpt("help").required(false).hasArg(false).desc("Help options").build();
 
 		Option operation = Option.builder("o").longOpt("operation").required(true).hasArg(true)
-				.desc("Name of Operation : download  and deploy ").build();
+				.desc("Name of Operation : export  or deploy ").build();
 
-		Option url = Option.builder("s").longOpt("gatewayURL").required(true).hasArg(true)
-				.desc("Admin Node Manager URL").build();
+		Option url = Option.builder("s").longOpt("url").required(true).hasArg(true).desc("API Manager URL").build();
 
 		Option username = Option.builder("u").longOpt("username").required(true).hasArg(true)
-				.desc("Admin Node Manager username").build();
+				.desc("API  Manager Username").build();
 
 		Option password = Option.builder("p").longOpt("password").required(true).hasArg(true)
-				.desc("Admin Node Manager password").build();
+				.desc("API Manager password").build();
 
-		Option groupName = Option.builder("g").longOpt("group").required(true).hasArg(true).desc("Domain group name")
+		Option artifactLocation = Option.builder("a").longOpt("artifactlocation").required(true).hasArg(true)
+				.desc("Artifact Location (Directory)").build();
+
+		Option apiVersion = Option.builder("v").longOpt("version").required(false).hasArg(true).desc("API Version")
 				.build();
 
-		Option instanceName = Option.builder("n").longOpt("instance").required(false).hasArg(true)
-				.desc("Domain instance name").build();
-
-		Option fedFile = Option.builder("f").longOpt("fedFile").required(false).hasArg(true).desc("Federation File")
+		Option apiNAme = Option.builder("n").longOpt("apiname").required(false).hasArg(true).desc("Name of the API")
+				.build();
+		
+		Option devOrgName = Option.builder("d").longOpt("orgname").required(false).hasArg(true).desc("Developer Organization Name")
 				.build();
 
-		Option polFile = Option.builder("pol").longOpt("polFile").required(false).hasArg(true).desc("PolicyFile File")
+		Option backendAuth = Option.builder("ba").longOpt("backendauth").required(false).hasArg(true)
+				.desc("Backend Authentication JSON").build();
+		Option backendURL = Option.builder("bu").longOpt("backendurl").required(false).hasArg(true).desc("Backend URL")
 				.build();
 
-		Option envFile = Option.builder("e").longOpt("envFile").required(false).hasArg(true).desc("Environment File")
-				.build();
+		Option outboundCert = Option.builder("oc").longOpt("outboundcert").required(false).hasArg(true)
+				.desc("Outbound Certficate directory").build();
 
-		Option type = Option.builder("t").longOpt("type").required(false).hasArg(true)
-				.desc("Possbile values: fed, polenv").build();
-
+		options.addOption(help);
 		options.addOption(operation);
 		options.addOption(url);
 		options.addOption(username);
 		options.addOption(password);
-		options.addOption(groupName);
-		options.addOption(instanceName);
-
-		options.addOption(fedFile);
-		options.addOption(polFile);
-		options.addOption(envFile);
-		options.addOption(help);
-		options.addOption(type);
+		options.addOption(apiVersion);
+		options.addOption(apiNAme);
+		options.addOption(artifactLocation);
+		options.addOption(devOrgName);
+		options.addOption(backendURL);
+		options.addOption(backendAuth);
+		options.addOption(outboundCert);
 		return options;
 	}
 
 	private static void usage() {
-		new HelpFormatter().printHelp("Gateway Deployment", options());
+		new HelpFormatter().printHelp("API  Deployment", options());
 	}
 
 }

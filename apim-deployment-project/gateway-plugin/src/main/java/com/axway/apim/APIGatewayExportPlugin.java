@@ -11,8 +11,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
-@Mojo(name = "apigateway-download", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true)
-public class APIGatewayDownloadPlugin extends AbstractGatewayMojo implements Constants {
+@Mojo(name = "apigateway-export", defaultPhase = LifecyclePhase.PACKAGE, threadSafe = true)
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -22,7 +21,6 @@ public class APIGatewayDownloadPlugin extends AbstractGatewayMojo implements Con
 		try {
 			String url = new URL(protocol, host, port, "").toString();
 			gatewayDeployment.init(url, username, password);
-			logger.info("init");
 			if (type.equalsIgnoreCase("fed")) {
 				gatewayDeployment.downloadFed(url, groupName, instanceName, fedFilePath);
 			} else if (type.equalsIgnoreCase("polenv")) {

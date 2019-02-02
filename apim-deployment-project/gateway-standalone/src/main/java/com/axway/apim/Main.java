@@ -113,7 +113,7 @@ public class Main {
 		}
 
 
-		if (operation.equalsIgnoreCase("download")) {
+		if (operation.equalsIgnoreCase("export")) {
 
 			orchestrator.download(url, username, password, groupName, instanceName, type, fedFileName, polFileName,
 					envFileName);
@@ -145,7 +145,7 @@ public class Main {
 		Option help = Option.builder("h").longOpt("help").required(false).hasArg(false).desc("Help options").build();
 
 		Option operation = Option.builder("o").longOpt("operation").required(true).hasArg(true)
-				.desc("Name of Operation : download  and deploy ").build();
+				.desc("Name of Operation : export  or deploy ").build();
 
 		Option url = Option.builder("s").longOpt("gatewayURL").required(true).hasArg(true)
 				.desc("Admin Node Manager URL").build();

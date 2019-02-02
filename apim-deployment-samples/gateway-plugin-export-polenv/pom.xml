@@ -5,7 +5,7 @@
     <artifactId>apim-deployment-samples</artifactId>
     <version>${revision}</version>
   </parent>
-  <artifactId>gateway-plugin-download-polenv</artifactId>
+  <artifactId>gateway-plugin-export-polenv</artifactId>
   
   <build>
 		<plugins>
@@ -28,7 +28,7 @@
 					<execution>
 						<phase>package</phase>
 						<goals>
-							<goal>apigateway-download</goal>
+							<goal>apigateway-export</goal>
 						</goals>
 
 					</execution>

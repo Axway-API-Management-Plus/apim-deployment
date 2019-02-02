@@ -6,7 +6,7 @@
 		<artifactId>apim-deployment-samples</artifactId>
 		<version>${revision}</version>
 	</parent>
-	<artifactId>gateway-plugin-download-fed</artifactId>
+	<artifactId>gateway-plugin-export-fed</artifactId>
 	<properties>
 		<revision>1.0.0</revision>
 	</properties>
@@ -30,7 +30,7 @@
 					<execution>
 						<phase>package</phase>
 						<goals>
-							<goal>apigateway-download</goal>
+							<goal>apigateway-export</goal>
 						</goals>
 
 					</execution>
