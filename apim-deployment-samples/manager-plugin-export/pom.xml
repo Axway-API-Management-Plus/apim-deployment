@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.axway.apim</groupId>
+    <artifactId>apim-deployment-samples</artifactId>
+    <version>${revision}</version>
+  </parent>
+  <artifactId>manager-plugin-export</artifactId>
+  
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>com.axway.apim</groupId>
+				<artifactId>manager-plugin</artifactId>
+				<version>${revision}</version>
+				<configuration>
+					<host>10.129.60.57</host>
+					<port>8075</port>
+					<protocol>https</protocol>
+					<username>apiadmin</username>
+					<password>changeme</password>
+					<apiName>petstore</apiName>
+					<apiVersion>1.0.0</apiVersion>
+					<artifactLocation>${basedir}/src/main/resources/api</artifactLocation>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>apimanager-export</goal>
+						</goals>
+
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

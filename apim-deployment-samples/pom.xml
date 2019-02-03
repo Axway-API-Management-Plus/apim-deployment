@@ -12,5 +12,7 @@
   	<module>gateway-plugin-export-polenv</module>
   	<module>gateway-plugin-deploy-fed</module>
   	<module>gateway-plugin-deploy-polenv</module>
+  	<module>manager-plugin-export</module>
+  	<module>manager-plugin-deploy</module>
   </modules>
 </project>

@@ -69,7 +69,7 @@ public class Orchestrator implements Constants{
 				logger.info("Deploying to server {} complete", instanceId);
 			}
 		} catch (ServerException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException
-				| UnsupportedOperationException | URISyntaxException | IOException e) {
+				| UnsupportedOperationException | URISyntaxException | IOException | APIMException e) {
 			logger.error("Unable to download the deployment package : Reason {}", e);
 			System.exit(1);
 		}

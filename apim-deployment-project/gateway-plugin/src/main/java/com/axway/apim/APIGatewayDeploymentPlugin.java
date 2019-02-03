@@ -43,9 +43,9 @@ public class APIGatewayDeploymentPlugin extends AbstractGatewayMojo implements C
 				logger.info("Deploying to server " + instanceId + " complete");
 			}
 		} catch (ServerException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException
-				| UnsupportedOperationException | URISyntaxException | IOException e) {
+				| UnsupportedOperationException | URISyntaxException | IOException | APIMException e) {
 			logger.error("Unable to download the deployment package : Reason {}", e);
-			System.exit(1);
+			throw new MojoExecutionException(e.getMessage());
 		}
 
 		logger.info("Deployment Complete....");

@@ -31,7 +31,7 @@ public class APIGatewayExportPlugin extends AbstractGatewayMojo implements Const
 				| MalformedURLException e) {
 			e.printStackTrace();
 			logger.error("Unable to download the deployment package : Reason {}", e);
-			System.exit(1);
+			throw new MojoFailureException(e.getMessage());
 		}
 		logger.info("Download Complete....");
 	}

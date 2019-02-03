@@ -278,18 +278,20 @@ public class GatewayDeployment {
 	}
 
 	public void deploy(String archiveId, String instanceId, String apiGatewayURL)
-			throws IOException, URISyntaxException {
+			throws IOException, URISyntaxException, APIMException {
 
 		// https://localhost:8090/api/router/service/instance-2/api/configuration?archiveId=480c6bbc-c2ed-4ff2-b649-7bd0b54ddd15
-		logger.info("deployment of pol and env start");
+		logger.info("Deployment start");
 		URI uri = new URIBuilder(apiGatewayURL).setPath("/api/router/service/" + instanceId + "/api/configuration")
 				.setParameter("archiveId", archiveId).build();
 		logger.info("Deploy URL :" + uri.toString());
 		HttpResponse response = axwayClient.putRequest(null, uri, null);
 		try{
 			int status = response.getStatusLine().getStatusCode();
+			String reason = response.getStatusLine().getReasonPhrase();
 			if (status >= 300) {
-				logger.error("Status code " + status + "Reason " + response.getStatusLine().getReasonPhrase());
+				logger.error("Status code {} Reason {} ", status, reason);
+				throw new APIMException(reason);
 			}
 			String responseStr = EntityUtils.toString(response.getEntity());
 			logger.info("Response from Server :" + responseStr);
