@@ -34,7 +34,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.axway.apim</groupId>
-			<artifactId>core</artifactId>
+			<artifactId>manager-core</artifactId>
 			<version>${revision}</version>
 		</dependency>
 	</dependencies>

@@ -6,10 +6,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 public abstract  class AbstractAPImanagerMojo extends AbstractMojo {
 
-	@Parameter
-	protected String groupName;
-	@Parameter
-	protected String instanceName;
+	
 	@Parameter
 	protected String host;
 	@Parameter
@@ -24,18 +21,14 @@ public abstract  class AbstractAPImanagerMojo extends AbstractMojo {
 	protected String password;
 
 	@Parameter
-	protected String polFilePath;
-
-	@Parameter
-	protected String envFilePath;
-
-	@Parameter
-	protected String fedFilePath;
-
-	@Parameter
-	protected String type;
+	protected String artifactLocation;
+	
+	
+	
 
 	protected Log logger = getLog();
+	
+	protected APIManagerWrapper apiManagerWrapper = new APIManagerWrapper();
 	
 	
 }
