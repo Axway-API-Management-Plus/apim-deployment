@@ -21,6 +21,11 @@ Axway APIM deployment standalone and maven plugin
 	```bash
 	$mvn clean install -Dmaven.test.skip=true
 	```
+- Ignore test project
+
+```bash
+#mvn clean install -Dmaven.test.skip=true -pl !apim-deployment-samples\gateway-plugin-deploy-fed,!apim-deployment-samples\gateway-plugin-deploy-polenv,!apim-deployment-samples\gateway-plugin-export-fed,!apim-deployment-samples\gateway-plugin-export-polenv,!apim-deployment-samples\manager-plugin-deploy,!apim-deployment-samples\manager-plugin-export
+```
 
 ## API Gateway Fed, Pol and Env Export and Deployment Example
 
