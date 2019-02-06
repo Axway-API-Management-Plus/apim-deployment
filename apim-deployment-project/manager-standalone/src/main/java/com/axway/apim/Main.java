@@ -31,8 +31,6 @@ public class Main {
 
 	public Main() {
 	}
-	
-	
 
 	public static void main(String[] args) throws ParseException {
 		// args = new String[] { "--operation=deploy",
@@ -40,7 +38,7 @@ public class Main {
 		// "--password=changeme", "--group=lambda",
 		// "--fedFile=D:\\api\\lambda.fed",
 		// "--polFile=D:\\api\\lambda.pol", "--type=fed" };
-		
+
 		Injector injector = Guice.createInjector(new DeploymentModule());
 
 		APIManagerWrapper apiManagerWrapper = injector.getInstance(APIManagerWrapper.class);
@@ -106,8 +104,6 @@ public class Main {
 				logger.error("Export failed : {}", e);
 			}
 
-			
-
 		} else if (operation.equals("deploy")) {
 
 			if (line.hasOption('d')) {
@@ -130,6 +126,15 @@ public class Main {
 
 			if (line.hasOption("vh")) {
 				virtualHost = line.getOptionValue("vh");
+			}
+
+			if (line.hasOption("acu")) {
+				apiConflictUpgrade = line.getOptionValue("acu");
+
+			}
+
+			if (line.hasOption("aur")) {
+				apiUnpublishedRemove = line.getOptionValue("aur");
 			}
 
 			try {
@@ -207,8 +212,13 @@ public class Main {
 		Option outboundCert = Option.builder("oc").longOpt("outboundcert").required(false).hasArg(true)
 				.desc("Outbound Certficate directory").build();
 
-		Option virtualHost = Option.builder("oc").longOpt("outboundcert").required(false).hasArg(true)
-				.desc("Outbound Certficate directory").build();
+		Option virtualHost = Option.builder("vh").longOpt("virtualhost").required(false).hasArg(true)
+				.desc("Virtual host").build();
+
+		Option apiConflictUpgrade = Option.builder("acu").longOpt("apiconflictupgrade").required(false).hasArg(true)
+				.desc("API Conflict Upgrade").build();
+		Option apiUnpublishedRemove = Option.builder("aur").longOpt("apiunpublishedremove").required(false).hasArg(true)
+				.desc("API Unpublished Remove").build();
 
 		options.addOption(help);
 		options.addOption(operation);
@@ -223,6 +233,9 @@ public class Main {
 		options.addOption(backendAuth);
 		options.addOption(outboundCert);
 		options.addOption(virtualHost);
+
+		options.addOption(apiConflictUpgrade);
+		options.addOption(apiUnpublishedRemove);
 
 		return options;
 	}
