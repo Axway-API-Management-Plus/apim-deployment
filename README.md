@@ -22,7 +22,7 @@ Axway APIM deployment standalone and maven plugin
 	$mvn clean install
 	```
 
-## API Gateway Deployment Example
+## API Gateway Fed, Pol and Env Export and Deployment Example
 
 - Deploy Fed to all Gateway
 
@@ -62,3 +62,61 @@ Example
 ```bash
 java -jar -DproxyHost=10.10.2.2 -DproxyPort=8080 --proxyProtocol=https gateway-standalone/target/gateway-standalone-1.0.0.jar -o=deploy -s=https://localhost:8090 -u=admin -p=changeme -g=finance -n=server1 -f=D:\\api\\finance.fed -t=fed
 ```
+
+## API Manger API Export and Deployment
+
+API manger export accepts api name and verion as input and json ( contains fronend and backend security credentials, outbound certs and CORS settings) as output. 
+
+API manger deploy operation accepts backend URL, backend Auth, virtual host and outbound cert and deploy to target server. 
+
+### API Manger API Export Example
+
+Possible parameters
+
+- operation* - Name of the operation e.g export
+- url* - API Manger URL e.g https://api-env.demo.axway.com:8075
+- username* - API manger usernmae
+- password* - API manger password
+- apiname*  - Name of API deployed on API manager
+- version  - Version of API
+- artifactlocation* - Location where API export is going to be stored
+
+* denotes mandatory parameters 
+
+Example Command:
+
+```bash
+java -jar manager-standalone\target\manager-standalone-1.0.0.jar --operation=export --url=https://api-env.demo.axway.com:8075 --username=apiadmin --passwrod=changeme --apiname=petstore --version=1.0.0 --artifactlocation=d:\api\petstore.json
+```
+
+### API Manger API Deployment Example
+
+Possible parameters: 
+
+- operation - Name of the operation e.g deploy 
+- url - API Manger URL e.g https://api-env.demo.axway.com:8075
+- username - API manger usernmae
+- password - API manger password
+- artifactlocation - Location where API export is available
+- backendurl - Backend API URL
+- outboundcert - Outbound certifcate directory e.g d:\api\certs. Directory should contain x509 certificate
+- virtualhost - Virtual host for API
+- apiconflictupgrade - If apiconflictupgrade flag set to true, api will be upgraded if there is a coflick with name, version and 
+- apiunpublishedremove - if apiunpublishedremove flag set to true, unpublished api will be deleted. 
+- backendauth - Backend API Authentication e.g
+```json
+{
+	"parameters": {
+		"apiKey": "4249823490238490",
+		"apiKeyField": "KeyId",
+		"httpLocation": "QUERYSTRING_PARAMETER"
+	},
+	"type": "apiKey"
+}
+```
+
+Example command
+```bash
+java -jar manager-standalone\target\manager-standalone-1.0.0.jar --operation=deploy --url=https://api-env.demo.axway.com:8075 --username=apiadmin --passwrod=changeme --apiname=petstore --version=1.0.0 --artifactlocation=d:\api\petstore.json --backendurl=https://prod.demo.axway.com --outboundcert=d:\api\certs --virtualhost=api.demo.axway.com --apiconflictupgrade=false --backendauth={"parameters": {"apiKey": "4249823490238490","apiKeyField": "KeyId","httpLocation": "QUERYSTRING_PARAMETER"},"type": "apiKey"}
+```
+
