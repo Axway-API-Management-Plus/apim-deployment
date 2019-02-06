@@ -27,13 +27,13 @@ Axway APIM deployment standalone and maven plugin
 - Deploy Fed to all Gateway
 
 ```bash
-java -jar gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --fedFile=D:\\api\\finance.fed	--type=fed
+java -jar gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --fedFile=D:\\api\\finance.fed --type=fed
 ```
 
 - Deploy Fed to specific Gateway
 
 ```bash
-java -jar gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --instance=server1 --fedFile=D:\\api\\finance.fed	--type=fed
+java -jar gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --instance=server1 --fedFile=D:\\api\\finance.fed --type=fed
 ```
 
 - Deploy Pol and Env to all Gateway
@@ -46,7 +46,7 @@ java -jar gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=dep
 - Deploy Pol and env to specific Gateway
 
 ```bash
-java -jar gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --instance=server1 --polFile=D:\\api\\finance.pol --envFile=D:\\api\\finance.env	--type=polenv
+java -jar gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --instance=server1 --polFile=D:\\api\\finance.pol --envFile=D:\\api\\finance.env --type=polenv
 ```
 
 - Proxy Support 
