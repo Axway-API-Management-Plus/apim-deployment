@@ -8,6 +8,7 @@ public class DeploymentModule extends AbstractModule {
 	protected void configure() {
 		bind(AxwayClient.class);
 		bind(GatewayDeployment.class);
+		bind(GatewayDeployment.class);
 	}
 
 }

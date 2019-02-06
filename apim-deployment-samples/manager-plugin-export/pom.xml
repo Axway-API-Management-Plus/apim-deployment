@@ -21,7 +21,7 @@
 					<password>changeme</password>
 					<apiName>petstore</apiName>
 					<apiVersion>1.0.0</apiVersion>
-					<artifactLocation>${basedir}/src/main/resources/api</artifactLocation>
+					<artifactLocation>${basedir}/src/main/resources/api/petstore.json</artifactLocation>
 				</configuration>
 				<executions>
 					<execution>

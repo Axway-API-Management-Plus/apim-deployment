@@ -6,19 +6,24 @@ import java.net.URI;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -34,6 +39,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
@@ -68,8 +74,8 @@ public class AxwayClient {
 			throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
 
 		URI uri = URI.create(apiManagerURL);
-
-		SSLContext sslContext = SSLContextBuilder.create().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build();
+		SSLContext sslContext = SSLContextBuilder.create().loadTrustMaterial(null, new TrustSelfSignedStrategy())
+				.build();
 		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
 		Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
 				.register(uri.getScheme(), sslsf).build();
@@ -98,10 +104,10 @@ public class AxwayClient {
 
 		httpClient = HttpClientBuilder.create().disableRedirectHandling().setConnectionManager(cm)
 				.setDefaultCredentialsProvider(credsProvider).setSSLSocketFactory(sslsf).build();
-		 
+
 	}
 
-	public HttpResponse postMultipart(URI uri, String filePath, String attachmentName)
+	public HttpResponse postMultipartFile(URI uri, String filePath, String attachmentName)
 			throws ClientProtocolException, IOException {
 
 		File file = new File(filePath);
@@ -117,10 +123,35 @@ public class AxwayClient {
 		return response;
 	}
 
-	public HttpResponse putRequest(String request, URI uri, String contentType)
+	public HttpResponse postMultipart(URI uri, String content, String attachmentName, Map<String, String> params)
 			throws ClientProtocolException, IOException {
 
-		HttpPut httppost = new HttpPut(uri);
+		StringBody stringBody = new StringBody(content, ContentType.APPLICATION_OCTET_STREAM);
+		MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create().addPart(attachmentName,
+				stringBody);
+		HttpPost httpPost = new HttpPost(uri);
+		if (proxy != null) {
+			RequestConfig requestConfig = RequestConfig.custom().setProxy(proxy).build();
+			httpPost.setConfig(requestConfig);
+		}
+
+		if (params != null) {
+			for (Map.Entry<String, String> entry : params.entrySet()) {
+				String key = entry.getKey();
+				String value = entry.getValue();
+				multipartEntityBuilder.addTextBody(key, value);
+
+			}
+		}
+		HttpEntity entity = multipartEntityBuilder.build();
+		httpPost.setEntity(entity);
+		CloseableHttpResponse response = httpClient.execute(httpPost, localContext);
+		return response;
+	}
+
+	public HttpResponse post(URI uri, String contentType, String request) throws ClientProtocolException, IOException {
+
+		HttpPost httppost = new HttpPost(uri);
 		if (request != null) {
 			StringEntity stringEntity = new StringEntity(request);
 			httppost.setEntity(stringEntity);
@@ -137,16 +168,64 @@ public class AxwayClient {
 		return response;
 	}
 
-	public HttpResponse getRequest(URI uri) throws ClientProtocolException, IOException {
-		
+	public HttpResponse postForm(URI uri, List<NameValuePair> params) throws ClientProtocolException, IOException {
+
+		HttpPost httppost = new HttpPost(uri);
+
+		StringEntity stringEntity = new UrlEncodedFormEntity(params);
+		httppost.setEntity(stringEntity);
+
+		if (proxy != null) {
+			RequestConfig requestConfig = RequestConfig.custom().setProxy(proxy).build();
+			httppost.setConfig(requestConfig);
+		}
+
+		CloseableHttpResponse response = httpClient.execute(httppost, localContext);
+		return response;
+	}
+
+	public HttpResponse put(URI uri, String contentType, String request) throws ClientProtocolException, IOException {
+
+		HttpPut httpput = new HttpPut(uri);
+		if (request != null) {
+			StringEntity stringEntity = new StringEntity(request);
+			httpput.setEntity(stringEntity);
+		}
+		if (contentType != null)
+			httpput.setHeader("Content-type", contentType);
+
+		if (proxy != null) {
+			RequestConfig requestConfig = RequestConfig.custom().setProxy(proxy).build();
+			httpput.setConfig(requestConfig);
+		}
+
+		CloseableHttpResponse response = httpClient.execute(httpput, localContext);
+		return response;
+	}
+
+	public HttpResponse get(URI uri) throws ClientProtocolException, IOException {
+
 		HttpGet get = new HttpGet(uri);
 		if (proxy != null) {
 			RequestConfig requestConfig = RequestConfig.custom().setProxy(proxy).build();
 			get.setConfig(requestConfig);
 		}
-		CloseableHttpResponse response = httpClient.execute(target, get, localContext);
 
+		CloseableHttpResponse response = httpClient.execute(target, get, localContext);
 		return response;
+
+	}
+
+	public HttpResponse delete(URI uri) throws ClientProtocolException, IOException {
+
+		HttpDelete delete = new HttpDelete(uri);
+		if (proxy != null) {
+			RequestConfig requestConfig = RequestConfig.custom().setProxy(proxy).build();
+			delete.setConfig(requestConfig);
+		}
+		CloseableHttpResponse response = httpClient.execute(target, delete, localContext);
+		return response;
+
 	}
 
 }

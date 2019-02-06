@@ -14,6 +14,5 @@
 		<module>manager-plugin</module>
 		<module>gateway-standalone</module>
 		<module>manager-standalone</module>
-		<module>manager-core</module>
 	</modules>
 </project>

@@ -1,6 +1,10 @@
 package com.axway.apim;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,13 +21,18 @@ import org.apache.commons.cli.UnrecognizedOptionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.axway.apim.model.ManagerInput;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 public class Main {
 
 	private static Logger logger = LoggerFactory.getLogger(Main.class);
 
 	public Main() {
-		// TODO Auto-generated constructor stub
 	}
+	
+	
 
 	public static void main(String[] args) throws ParseException {
 		// args = new String[] { "--operation=deploy",
@@ -31,8 +40,10 @@ public class Main {
 		// "--password=changeme", "--group=lambda",
 		// "--fedFile=D:\\api\\lambda.fed",
 		// "--polFile=D:\\api\\lambda.pol", "--type=fed" };
+		
+		Injector injector = Guice.createInjector(new DeploymentModule());
 
-		APIManagerWrapper apiManagerWrapper = new APIManagerWrapper();
+		APIManagerWrapper apiManagerWrapper = injector.getInstance(APIManagerWrapper.class);
 
 		Options options = options();
 
@@ -66,6 +77,10 @@ public class Main {
 		String apiName = null;
 		String apiVersion = null;
 
+		String apiConflictUpgrade = null;
+		String apiUnpublishedRemove = null;
+		String virtualHost = null;
+
 		if (operation.equalsIgnoreCase("export")) {
 			if (line.hasOption('n')) {
 				apiName = line.getOptionValue("n");
@@ -85,21 +100,23 @@ public class Main {
 			logger.info("Exportig API {} with Version {}", apiName, apiVersion);
 			try {
 				apiManagerWrapper.exportAPIs(url, username, password, artifactLocation, apiName, version);
-			} catch (IOException e) {
+				logger.info("API Exported to location {}", artifactLocation);
+			} catch (IOException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException
+					| URISyntaxException | APIMException e) {
 				logger.error("Export failed : {}", e);
 			}
 
-			logger.info("API Exported to location {}", artifactLocation);
+			
 
 		} else if (operation.equals("deploy")) {
-			
+
 			if (line.hasOption('d')) {
 				orgName = line.getOptionValue("d");
 			} else {
 				logger.error("Provide Developer Organization Name");
 				System.exit(1);
 			}
-			
+
 			if (line.hasOption("bu")) {
 				backendURL = line.getOptionValue("bu");
 			}
@@ -110,10 +127,28 @@ public class Main {
 			if (line.hasOption("oc")) {
 				outboundCertDir = line.getOptionValue("oc");
 			}
-			
+
+			if (line.hasOption("vh")) {
+				virtualHost = line.getOptionValue("vh");
+			}
+
 			try {
-				apiManagerWrapper.importAPIs(url, username, password, artifactLocation, orgName, backendURL, outboundCertDir, backendAuthJson);
-			} catch (IOException | CertificateException e) {
+				ManagerInput managerInput = new ManagerInput();
+				managerInput.setUrl(url);
+				managerInput.setUsername(username);
+				managerInput.setPassword(password);
+				managerInput.setOrgName(orgName);
+				managerInput.setBackendURL(backendURL);
+				managerInput.setLocation(artifactLocation);
+				managerInput.setVirtualHost(virtualHost);
+				managerInput.setOutboundCertFolder(outboundCertDir);
+				managerInput.setBackendAuthJson(backendAuthJson);
+				managerInput.setApiConflictUpgrade(Boolean.parseBoolean(apiConflictUpgrade));
+				managerInput.setApiUnpublishedRemove(Boolean.parseBoolean(apiUnpublishedRemove));
+				apiManagerWrapper.importAPIs(managerInput);
+			} catch (IOException | CertificateException | KeyManagementException | UnsupportedOperationException
+					| NoSuchAlgorithmException | KeyStoreException | org.apache.http.ParseException | URISyntaxException
+					| ServerException | APIMException e) {
 				logger.error("Deployment failed : {}", e);
 			}
 
@@ -160,9 +195,9 @@ public class Main {
 
 		Option apiNAme = Option.builder("n").longOpt("apiname").required(false).hasArg(true).desc("Name of the API")
 				.build();
-		
-		Option devOrgName = Option.builder("d").longOpt("orgname").required(false).hasArg(true).desc("Developer Organization Name")
-				.build();
+
+		Option devOrgName = Option.builder("d").longOpt("orgname").required(false).hasArg(true)
+				.desc("Developer Organization Name").build();
 
 		Option backendAuth = Option.builder("ba").longOpt("backendauth").required(false).hasArg(true)
 				.desc("Backend Authentication JSON").build();
@@ -170,6 +205,9 @@ public class Main {
 				.build();
 
 		Option outboundCert = Option.builder("oc").longOpt("outboundcert").required(false).hasArg(true)
+				.desc("Outbound Certficate directory").build();
+
+		Option virtualHost = Option.builder("oc").longOpt("outboundcert").required(false).hasArg(true)
 				.desc("Outbound Certficate directory").build();
 
 		options.addOption(help);
@@ -184,6 +222,8 @@ public class Main {
 		options.addOption(backendURL);
 		options.addOption(backendAuth);
 		options.addOption(outboundCert);
+		options.addOption(virtualHost);
+
 		return options;
 	}
 

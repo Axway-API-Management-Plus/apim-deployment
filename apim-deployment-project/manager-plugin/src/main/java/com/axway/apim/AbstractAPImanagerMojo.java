@@ -4,6 +4,10 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Parameter;
 
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+
 public abstract  class AbstractAPImanagerMojo extends AbstractMojo {
 
 	
@@ -28,7 +32,14 @@ public abstract  class AbstractAPImanagerMojo extends AbstractMojo {
 
 	protected Log logger = getLog();
 	
-	protected APIManagerWrapper apiManagerWrapper = new APIManagerWrapper();
+	@Inject
+	protected APIManagerWrapper apiManagerWrapper;
+
+	
+	protected void setup(Object obj){
+		Injector injector = Guice.createInjector(new DeploymentModule());
+		injector.injectMembers(obj);
+	}
 	
 	
 }

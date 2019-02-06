@@ -4,14 +4,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64OutputStream;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
@@ -23,21 +19,12 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
-public class GatewayDeployment {
+public class GatewayDeployment extends AbstractDeployment{
 
 	private static Logger logger = LoggerFactory.getLogger(GatewayDeployment.class);
-
-	@Inject
-	private AxwayClient axwayClient;
-
-	public void init(String apiGatewayURL, String username, String password)
-			throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
-		axwayClient.createConnection(apiGatewayURL, username, password);
-	}
 
 	public void downloadFed(String url, String groupName, String instanceName, String fedFileName)
 			throws APIMException, ServerException {
@@ -64,23 +51,20 @@ public class GatewayDeployment {
 	}
 
 	public String uploadPolicy(String phyGroupName, String attachmentName, String apiGatewayURL, String polFilePath)
-			throws IOException, URISyntaxException {
+			throws IOException, URISyntaxException, UnsupportedOperationException, ServerException {
 
 		logger.info("upload pol start");
 		URI uri = new URIBuilder(apiGatewayURL)
 				.setPath("/api/deployment/group/configuration/file/policy/" + phyGroupName).build();
-		logger.info("Policy URL: " + uri.toString());
-		HttpResponse response = axwayClient.postMultipart(uri, polFilePath, attachmentName);
+		logger.info("Upload Policy URL: " + uri.toString());
+		HttpResponse response = axwayClient.postMultipartFile(uri, polFilePath, attachmentName);
 		logger.info("upload pol complete");
-		try {
-			return processResponse(response);
-		} finally {
-			HttpClientUtils.closeQuietly(response);
-		}
+		return process200Response(response,"Upload pol failed","$.result");
+	
 	}
 
 	public String uploadEnv(String phyGroupName, String attachmentName, String relatedPolicyArchiveID,
-			String apiGatewayURL, String envFilePath) throws IOException, URISyntaxException {
+			String apiGatewayURL, String envFilePath) throws IOException, URISyntaxException, UnsupportedOperationException, ServerException {
 		logger.info("upload env start");
 
 		URI uri = new URIBuilder(apiGatewayURL)
@@ -89,17 +73,13 @@ public class GatewayDeployment {
 
 		logger.info("Env URL :" + uri.toString());
 
-		HttpResponse response = axwayClient.postMultipart(uri, envFilePath, attachmentName);
+		HttpResponse response = axwayClient.postMultipartFile(uri, envFilePath, attachmentName);
 		logger.info("upload env complete");
-		try {
-			return processResponse(response);
-		} finally {
-			HttpClientUtils.closeQuietly(response);
-		}
+		return process200Response(response,"Upload env failed","$.result");
 	}
 
 	public String uploadFed(String phyGroupName, String attachmentName, String apiGatewayURL, String fedFilePath,
-			List<String> servers) throws IOException, URISyntaxException {
+			List<String> servers) throws IOException, URISyntaxException, UnsupportedOperationException, ServerException {
 
 		logger.info("Upload Fed start");
 
@@ -112,13 +92,9 @@ public class GatewayDeployment {
 		URI uri = new URIBuilder(apiGatewayURL).setPath("/api/deployment/group/configuration/file/" + phyGroupName)
 				.addParameters(serviceIds).build();
 		logger.info("Fed URL: " + uri.toString());
-		HttpResponse response = axwayClient.postMultipart(uri, fedFilePath, attachmentName);
+		HttpResponse response = axwayClient.postMultipartFile(uri, fedFilePath, attachmentName);
 		logger.info("Upload fed complete");
-		try {
-			return processResponse(response);
-		} finally {
-			HttpClientUtils.closeQuietly(response);
-		}
+		return process200Response(response,"Upload fed failed","$.result");
 	}
 
 	private String getServiceId(String apiGatewayURL, String groupName, String instanceName)
@@ -132,15 +108,16 @@ public class GatewayDeployment {
 
 		if (instanceName == null) {
 			groupURI = new URIBuilder(apiGatewayURL).setPath("/api/topology/services/" + phycialgroupName).build();
-
 			logger.info("Get Group Details {}", groupURI);
-			phycialInstanceName = process200Response(groupURI, "Instance is not available", "$.result[0].id");
+			HttpResponse httpResponse = axwayClient.get(groupURI);
+			phycialInstanceName = process200Response(httpResponse, "Instance is not available", "$.result[0].id");
 
 		} else {
 			groupURI = new URIBuilder(apiGatewayURL).setPath("/api/topology/services/id/" + phycialgroupName)
 					.setParameter("serviceName", groupName).build();
 			logger.info("Getting Physical Instance name URI {}", groupURI);
-			phycialInstanceName = process200Response(groupURI, "Instance is not available", "$.result");
+			HttpResponse httpResponse = axwayClient.get(groupURI);
+			phycialInstanceName = process200Response(httpResponse, "Instance is not available", "$.result");
 		}
 		logger.info("Phycial Instance name {}", phycialInstanceName);
 		return phycialInstanceName;
@@ -155,7 +132,7 @@ public class GatewayDeployment {
 			groupURI = new URIBuilder(apiGatewayURL).setPath("/api/topology/services/" + phycialgroupName).build();
 
 			logger.info("Get Group Details {}", groupURI);
-			HttpResponse httpResponse = axwayClient.getRequest(groupURI);
+			HttpResponse httpResponse = axwayClient.get(groupURI);
 			try {
 				StatusLine statusLine = httpResponse.getStatusLine();
 				int statusCode = statusLine.getStatusCode();
@@ -175,7 +152,8 @@ public class GatewayDeployment {
 			groupURI = new URIBuilder(apiGatewayURL).setPath("/api/topology/services/id/" + phycialgroupName)
 					.setParameter("serviceName", groupName).build();
 			logger.info("Getting Physical Instance name URI {}", groupURI);
-			String phycialInstanceName = process200Response(groupURI, "Instance is not available", "$.result");
+			HttpResponse httpResponse = axwayClient.get(groupURI);
+			String phycialInstanceName = process200Response(httpResponse, "Instance is not available", "$.result");
 			servers.add(phycialInstanceName);
 		}
 		return servers;
@@ -187,7 +165,8 @@ public class GatewayDeployment {
 				.setParameter("groupName", groupName).build();
 
 		logger.info("Getting Physical Group name URI {}", groupURI);
-		String phycialgroupName = process200Response(groupURI, "Group is not available", "$.result");
+		HttpResponse httpResponse = axwayClient.get(groupURI);
+		String phycialgroupName = process200Response(httpResponse, "Group is not available", "$.result");
 		return phycialgroupName;
 	}
 
@@ -212,7 +191,8 @@ public class GatewayDeployment {
 		URI downloadPolURI = new URIBuilder(apiGatewayURL)
 				.setPath("/api/deployment/archive/policy/service/" + serviceId).build();
 		logger.info("Downloading pol file : {}", downloadPolURI);
-		String pol = process200Response(downloadPolURI, "Internal error", "$.result.data");
+		HttpResponse httpResponse = axwayClient.get(downloadPolURI);
+		String pol = process200Response(httpResponse, "Internal error", "$.result.data");
 		writeBase64asFile(filename, pol);
 		logger.info("Writing pol file to {}", filename);
 
@@ -223,7 +203,8 @@ public class GatewayDeployment {
 		URI downloadEnvURI = new URIBuilder(apiGatewayURL)
 				.setPath("/api/deployment/archive/environment/service/" + serviceId).build();
 		logger.info("Downloading env file : {}", downloadEnvURI);
-		String env = process200Response(downloadEnvURI, "Internal error", "$.result.data");
+		HttpResponse httpResponse = axwayClient.get(downloadEnvURI);
+		String env = process200Response(httpResponse, "Internal error", "$.result.data");
 		writeBase64asFile(filename, env);
 		logger.info("Writing env file to {}", filename);
 
@@ -234,48 +215,29 @@ public class GatewayDeployment {
 		URI downloadFedURI = new URIBuilder(apiGatewayURL).setPath("/api/deployment/archive/service/" + serviceId)
 				.build();
 		logger.info("Downloading fed file : {}", downloadFedURI);
-		String fed = process200Response(downloadFedURI, "Internal error", "$.result.data");
+		HttpResponse httpResponse = axwayClient.get(downloadFedURI);
+		String fed = process200Response(httpResponse, "Internal error", "$.result.data");
 		logger.info("Writing fed file to {}", filename);
 		writeBase64asFile(filename, fed);
 	}
 
-	private String process200Response(URI uri, String customErrorMessage, String jsonPath)
-			throws UnsupportedOperationException, IOException, ServerException {
-		HttpResponse httpResponse = axwayClient.getRequest(uri);
-		try{
-			StatusLine statusLine = httpResponse.getStatusLine();
-			int statusCode = statusLine.getStatusCode();
 	
-			if (statusCode != 200) {
-				String errorMsg = "Status code " + statusCode + " Reason " + statusLine.getReasonPhrase();
-				logger.error(errorMsg);
-				logger.error("Server Response {}", EntityUtils.toString(httpResponse.getEntity()));
-				throw new ServerException(errorMsg);
-			}
-			DocumentContext documentContext = JsonPath.parse(httpResponse.getEntity().getContent());
-			String result = documentContext.read(jsonPath, String.class);
-			return result;
-		}finally {
-			HttpClientUtils.closeQuietly(httpResponse);
-		}
 
-	}
-
-	private String processResponse(HttpResponse response) throws UnsupportedOperationException, IOException {
-		HttpEntity entity = response.getEntity();
-		int status = response.getStatusLine().getStatusCode();
-		if (status == 200) {
-			DocumentContext documentContext = JsonPath.parse(entity.getContent());
-			String result = documentContext.read("$.result", String.class);
-			return result;
-		} else {
-			logger.error("Status code " + status + "Reason " + response.getStatusLine().getReasonPhrase());
-			String responseStr = EntityUtils.toString(entity);
-			logger.error("Response from Server :" + responseStr);
-			return null;
-		}
-
-	}
+//	private String processResponse(HttpResponse response) throws UnsupportedOperationException, IOException {
+//		HttpEntity entity = response.getEntity();
+//		int status = response.getStatusLine().getStatusCode();
+//		if (status == 200) {
+//			DocumentContext documentContext = JsonPath.parse(entity.getContent());
+//			String result = documentContext.read("$.result", String.class);
+//			return result;
+//		} else {
+//			logger.error("Status code " + status + "Reason " + response.getStatusLine().getReasonPhrase());
+//			String responseStr = EntityUtils.toString(entity);
+//			logger.error("Response from Server :" + responseStr);
+//			return null;
+//		}
+//
+//	}
 
 	public void deploy(String archiveId, String instanceId, String apiGatewayURL)
 			throws IOException, URISyntaxException, APIMException {
@@ -285,7 +247,7 @@ public class GatewayDeployment {
 		URI uri = new URIBuilder(apiGatewayURL).setPath("/api/router/service/" + instanceId + "/api/configuration")
 				.setParameter("archiveId", archiveId).build();
 		logger.info("Deploy URL :" + uri.toString());
-		HttpResponse response = axwayClient.putRequest(null, uri, null);
+		HttpResponse response = axwayClient.put(uri,null, null);
 		try{
 			int status = response.getStatusLine().getStatusCode();
 			String reason = response.getStatusLine().getReasonPhrase();

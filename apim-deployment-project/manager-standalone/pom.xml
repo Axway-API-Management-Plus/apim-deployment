@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.axway.apim</groupId>
-			<artifactId>manager-core</artifactId>
+			<artifactId>core</artifactId>
 			<version>${revision}</version>
 		</dependency>
 	</dependencies>
