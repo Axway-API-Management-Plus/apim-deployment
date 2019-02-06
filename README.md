@@ -19,7 +19,7 @@ Axway APIM deployment standalone and maven plugin
 ### Build the project 
 
 	```bash
-	$mvn clean install
+	$mvn clean install -Dmaven.test.skip=true
 	```
 
 ## API Gateway Fed, Pol and Env Export and Deployment Example
@@ -93,11 +93,12 @@ java -jar manager-standalone\target\manager-standalone-1.0.0.jar --operation=exp
 
 Possible parameters: 
 
-- operation - Name of the operation e.g deploy 
-- url - API Manger URL e.g https://api-env.demo.axway.com:8075
-- username - API manger usernmae
-- password - API manger password
-- artifactlocation - Location where API export is available
+- operation* - Name of the operation e.g deploy 
+- url* - API Manger URL e.g https://api-env.demo.axway.com:8075
+- username* - API manger usernmae
+- password* - API manger password
+- artifactlocation* - Location where API export is available
+- orgname* - API manger Developer Organization name
 - backendurl - Backend API URL
 - outboundcert - Outbound certifcate directory e.g d:\api\certs. Directory should contain x509 certificate
 - virtualhost - Virtual host for API
@@ -117,6 +118,6 @@ Possible parameters:
 
 Example command
 ```bash
-java -jar manager-standalone\target\manager-standalone-1.0.0.jar --operation=deploy --url=https://api-env.demo.axway.com:8075 --username=apiadmin --passwrod=changeme --apiname=petstore --version=1.0.0 --artifactlocation=d:\api\petstore.json --backendurl=https://prod.demo.axway.com --outboundcert=d:\api\certs --virtualhost=api.demo.axway.com --apiconflictupgrade=false --backendauth={"parameters": {"apiKey": "4249823490238490","apiKeyField": "KeyId","httpLocation": "QUERYSTRING_PARAMETER"},"type": "apiKey"}
+java -jar manager-standalone\target\manager-standalone-1.0.0.jar --operation=deploy --url=https://api-env.demo.axway.com:8075 --username=apiadmin --passwrod=changeme --orgname=Axway --artifactlocation=d:\api\petstore.json --backendurl=https://prod.demo.axway.com --outboundcert=d:\api\certs --virtualhost=api.demo.axway.com --apiconflictupgrade=false --backendauth={"parameters": {"apiKey": "4249823490238490","apiKeyField": "KeyId","httpLocation": "QUERYSTRING_PARAMETER"},"type": "apiKey"}
 ```
 
