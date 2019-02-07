@@ -195,9 +195,6 @@ public class APIManagerWrapper implements Constants {
 
 			String orgId = managerDeployment.getOrganizationId(url, orgName);
 
-			System.out.println(publishedAPIsByNameAndVersionAndPath);
-			System.out.println(allAPIByName);
-
 			if (!publishedAPIsByName.isEmpty()) {
 
 				if (!publishedAPIsByNameAndVersionAndPath.isEmpty()) {
