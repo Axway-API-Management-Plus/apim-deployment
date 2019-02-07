@@ -1,5 +1,7 @@
-# apim-deployment
-Axway APIM deployment standalone and maven plugin
+
+# Amplify APIM Deployment Utilities
+Axway Amplify APIM deployment project provides utility to  export and import API and fed, pol and env artifacts.
+The utilities are delivered as standalone and maven plugin for CI tool integration. 
 
 ## Prerequisites
 
@@ -70,7 +72,7 @@ java -jar -DproxyHost=10.10.2.2 -DproxyPort=8080 --proxyProtocol=https gateway-s
 
 ## API Manger API Export and Deployment
 
-API manger export accepts api name and verion as input and json ( contains fronend and backend security credentials, outbound certs and CORS settings) as output. 
+API manger export accepts api name and version as input and json ( contains frontend and backend security credentials, outbound certs and CORS settings) as output. 
 
 API manger deploy operation accepts backend URL, backend Auth, virtual host and outbound cert and deploy to target server. 
 
@@ -80,7 +82,7 @@ Possible parameters
 
 - operation* - Name of the operation e.g export
 - url* - API Manger URL e.g https://api-env.demo.axway.com:8075
-- username* - API manger usernmae
+- username* - API manger username
 - password* - API manger password
 - apiname*  - Name of API deployed on API manager
 - version  - Version of API
@@ -100,16 +102,18 @@ Possible parameters:
 
 - operation* - Name of the operation e.g deploy 
 - url* - API Manger URL e.g https://api-env.demo.axway.com:8075
-- username* - API manger usernmae
+- username* - API manger username
 - password* - API manger password
 - artifactlocation* - Location where API export is available
 - orgname* - API manger Developer Organization name
 - backendurl - Backend API URL
-- outboundcert - Outbound certifcate directory e.g d:\api\certs. Directory should contain x509 certificate
+- outboundcert - Outbound certificate directory e.g d:\api\certs. Directory should contain x509 certificate
 - virtualhost - Virtual host for API
-- apiconflictupgrade - If apiconflictupgrade flag set to true, api will be upgraded if there is a coflick with name, version and 
+- apiconflictupgrade - If apiconflictupgrade flag set to true, api will be upgraded if there is a conflict with name, version and 
 - apiunpublishedremove - if apiunpublishedremove flag set to true, unpublished api will be deleted. 
 - backendauth - Backend API Authentication e.g
+
+API key:
 ```json
 {
 	"parameters": {
@@ -118,6 +122,17 @@ Possible parameters:
 		"httpLocation": "QUERYSTRING_PARAMETER"
 	},
 	"type": "apiKey"
+}
+```
+Http Basic Auth:
+
+```json
+{
+	"parameters": {
+		"username": "user2",
+		"password": "user2"
+	},
+	"type": "http_basic"
 }
 ```
 

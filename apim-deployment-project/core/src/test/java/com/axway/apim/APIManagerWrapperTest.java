@@ -56,7 +56,6 @@ public class APIManagerWrapperTest extends TestCase {
 				+ "\"apiKeyField\": \"KeyId\"," + "\"httpLocation\": \"QUERYSTRING_PARAMETER\"" + "},"
 				+ "\"type\": \"apiKey\"" + "}";
 
-		System.out.println(backendAuth);
 
 		ManagerInput managerInput = new ManagerInput();
 		managerInput.setUrl("https://10.129.60.57:8075");
@@ -100,6 +99,39 @@ public class APIManagerWrapperTest extends TestCase {
 		managerInput.setOutboundCertFolder(file.getAbsolutePath());
 		managerInput.setBackendAuthJson(backendAuth);
 		managerInput.setApiConflictUpgrade(true);
+
+		try {
+			apiManagerWrapper.importAPIs(managerInput);
+		} catch (IOException | CertificateException | UnsupportedOperationException | URISyntaxException
+				| ServerException | KeyManagementException | NoSuchAlgorithmException | KeyStoreException
+				| ParseException | APIMException e) {
+			e.printStackTrace();
+			fail("API import Failed ");
+		}
+	}
+	
+	@org.junit.Test
+	public void testOverrideImportAndUnpublishedRemove() {
+
+		File file = new File("src/test/resources/inbound-certs");
+		String backendAuth = "{" + "\"parameters\": {" + "\"apiKey\": \"4249823490238490\","
+				+ "\"apiKeyField\": \"KeyId\"," + "\"httpLocation\": \"QUERYSTRING_PARAMETER\"" + "},"
+				+ "\"type\": \"apiKey\"" + "}";
+
+		System.out.println(backendAuth);
+
+		ManagerInput managerInput = new ManagerInput();
+		managerInput.setUrl("https://10.129.60.57:8075");
+		managerInput.setUsername("apiadmin");
+		managerInput.setPassword("changeme");
+		managerInput.setOrgName("API Development");
+		managerInput.setBackendURL("https://api.test.com");
+		managerInput.setLocation("d:\\api\\test\\petstore\\petstore.json");
+		managerInput.setVirtualHost("api.axway.com");
+		managerInput.setOutboundCertFolder(file.getAbsolutePath());
+		managerInput.setBackendAuthJson(backendAuth);
+		managerInput.setApiConflictUpgrade(true);
+		managerInput.setApiUnpublishedRemove(true);
 
 		try {
 			apiManagerWrapper.importAPIs(managerInput);
