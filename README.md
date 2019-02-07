@@ -1,6 +1,6 @@
 
 # Amplify APIM Deployment Utilities
-Axway Amplify APIM deployment project provides utility to  export and import API and fed, pol and env artifacts.
+Axway Amplify APIM deployment project provides utility to  export and import API, fed, pol and env artifacts.
 The utilities are delivered as standalone and maven plugin for CI tool integration. 
 
 ## Prerequisites
