@@ -93,7 +93,7 @@ public class APIManagerWrapper implements Constants {
 		FrondendAPI newFrondendAPI = updatedAllAPIByName.get(0); // New API
 																	// id
 		String newId = newFrondendAPI.getId();
-		managerDeployment.publishVirtualizedAPI(url, newId, newFrondendAPI.getName(), virtualHost);
+		managerDeployment.publishAPI(url, newId, newFrondendAPI.getName(), virtualHost);
 		managerDeployment.upgradeAPI(url, newId, id, deprecate, retire);
 		managerDeployment.unpublishAPI(url, id);
 		if (apiUnpublishedRemove) {
@@ -183,6 +183,12 @@ public class APIManagerWrapper implements Constants {
 			String apiName = documentContext.read("$.frontend.apis[0].name");
 			String apiVersion = documentContext.read("$.frontend.apis[0].version");
 			String path = documentContext.read("$.frontend.apis[0].path");
+			
+			String apiState = documentContext.read("$.frontend.apis[0].path");
+			
+			if(!apiState.equals(PUBLISHED)){
+				throw new APIMException("API artifact "+apiName +" is not in published state, exiting...");
+			}
 
 			List<String> version = new ArrayList<>();
 			version.add(apiVersion);
@@ -198,6 +204,7 @@ public class APIManagerWrapper implements Constants {
 			if (!publishedAPIsByName.isEmpty()) {
 
 				if (!publishedAPIsByNameAndVersionAndPath.isEmpty()) {
+					//publishing API with same version
 					if (!apiConflictUpgrade) {
 						logger.error(" API {} with version {} and path {} is already in published state", apiName,
 								apiVersion, path);
@@ -211,30 +218,33 @@ public class APIManagerWrapper implements Constants {
 					managerDeployment.importAPI(url, orgId, content);
 					List<FrondendAPI> updatedVirtualizedApis = getFrontendAPIs(url, apiName, version, null)
 							.getAllAPIByName();
+					updatedVirtualizedApis.removeAll(allAPIByName);
 					upgradeAPI(url, frondendAPI, allAPIByName, updatedVirtualizedApis, virtualHost, apiUnpublishedRemove,
 							false, false);
 
+				}else{
+					//publishing API with different version
+					logger.info(" API {} is in published state in target server", apiName);
+					FrondendAPI frondendAPI = publishedAPIsByName.get(0);
+					managerDeployment.importAPI(url, orgId, content);
+					List<FrondendAPI> updatedVirtualizedApis = getFrontendAPIs(url, apiName, version, null)
+							.getAllAPIByName();
+					updatedVirtualizedApis.removeAll(allAPIByName);
+					logger.info("Upgrading access from  API {} and version to API {} and version", frondendAPI.getName(), frondendAPI.getVersion(), apiName, apiVersion);
+					//As api version is different not deleting API
+					upgradeAPI(url, frondendAPI, allAPIByName, updatedVirtualizedApis, virtualHost, false,
+							false, false);
 				}
 
 			} else {
-				logger.info(" API {} with version {} and path {} is not in published state", apiName, apiVersion, path);
-
+				logger.info(" API {} with version {} and path {} is not available in targer server", apiName, apiVersion, path);
 				managerDeployment.importAPI(url, orgId, content);
 				List<FrondendAPI> updatedVirtualizedApis = getFrontendAPIs(url, apiName, version, null)
 						.getAllAPIByName();
-				FrondendAPI frondendAPI = publishedAPIsByName.get(0);
-				upgradeAPI(url, frondendAPI, allAPIByName, updatedVirtualizedApis, virtualHost, apiUnpublishedRemove,
-						false, false);
-			}
-
-			if (allAPIByName.isEmpty()) {
-				logger.info(" API {} with version {} and path {} is not available", apiName, apiVersion, path);
-				managerDeployment.importAPI(url, orgId, content);
-				List<FrondendAPI> updatedVirtualizedApis = getFrontendAPIs(url, apiName, version, null)
-						.getAllAPIByName();
+				updatedVirtualizedApis.removeAll(allAPIByName);
 				FrondendAPI frondendAPI = updatedVirtualizedApis.get(0);
 				String newId = frondendAPI.getId();
-				managerDeployment.publishVirtualizedAPI(url, newId, frondendAPI.getName(), virtualHost);
+				managerDeployment.publishAPI(url, newId, frondendAPI.getName(), virtualHost);
 			}
 		} finally {
 			if (inputStream != null)

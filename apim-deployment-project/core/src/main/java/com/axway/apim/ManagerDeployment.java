@@ -110,15 +110,11 @@ public class ManagerDeployment extends AbstractDeployment implements Constants {
 		return orgId;
 	}
 
-	public void unpublishVirtualizedAPI(String url, String id)
-			throws URISyntaxException, ClientProtocolException, IOException, APIMException {
-		URI uri = new URIBuilder(url).setPath(API_BASEPATH + "/proxies/" + id + "/unpublish").build();
-		HttpResponse response = axwayClient.post(uri, null, null);
-		handleResponse(response);
-	}
 	
-	public void publishVirtualizedAPI(String url, String id, String name, String virtualHost)
+	public void publishAPI(String url, String id, String name, String virtualHost)
 			throws URISyntaxException, ClientProtocolException, IOException, APIMException {
+		
+		logger.info("Publishing API");
 		
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("name", name));
@@ -208,6 +204,8 @@ public class ManagerDeployment extends AbstractDeployment implements Constants {
 
 	public void importAPI(String url, String orgId, String api)
 			throws URISyntaxException, ClientProtocolException, IOException, ParseException, APIMException {
+		
+		logger.info("Importing API");
 
 		URI uri = new URIBuilder(url).setPath(API_BASEPATH + "/proxies/" + "import").build();
 

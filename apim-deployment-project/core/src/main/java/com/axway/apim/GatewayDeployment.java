@@ -150,7 +150,7 @@ public class GatewayDeployment extends AbstractDeployment{
 
 		} else {
 			groupURI = new URIBuilder(apiGatewayURL).setPath("/api/topology/services/id/" + phycialgroupName)
-					.setParameter("serviceName", groupName).build();
+					.setParameter("serviceName", instanceName).build();
 			logger.info("Getting Physical Instance name URI {}", groupURI);
 			HttpResponse httpResponse = axwayClient.get(groupURI);
 			String phycialInstanceName = process200Response(httpResponse, "Instance is not available", "$.result");
