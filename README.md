@@ -28,37 +28,88 @@ The utilities are delivered as standalone and maven plugin for CI tool integrati
 ```bash
 $mvn clean install -Dmaven.test.skip=true -pl !apim-deployment-samples\gateway-plugin-deploy-fed,!apim-deployment-samples\gateway-plugin-deploy-polenv,!apim-deployment-samples\gateway-plugin-export-fed,!apim-deployment-samples\gateway-plugin-export-polenv,!apim-deployment-samples\manager-plugin-deploy,!apim-deployment-samples\manager-plugin-export
 ```
-
-## API Gateway Fed, Pol and Env Export and Deployment Example
-
-- Deploy Fed to all Gateway
+Example for Linux:
 
 ```bash
-java -jar gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --fedFile=D:\\api\\finance.fed --type=fed
+#mvn clean install -Dmaven.test.skip=true -pl \!apim-deployment-samples/gateway-plugin-deploy-fed,\!apim-deployment-samples/gateway-plugin-deploy-polenv,\!apim-deployment-samples/gateway-plugin-export-fed,\!apim-deployment-samples/gateway-plugin-export-polenv,\!apim-deployment-samples/manager-plugin-deploy,\!apim-deployment-samples/manager-plugin-export
 ```
-
-- Deploy Fed to specific Gateway
+## Using the tool
+You can run the following command to see available options:
 
 ```bash
-java -jar gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --instance=server1 --fedFile=D:\\api\\finance.fed --type=fed
+#java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --help
+usage: Gateway Deployment
+ -e,--envFile <arg>      Environment File
+ -f,--fedFile <arg>      Federation File
+ -g,--group <arg>        Domain group name
+ -h,--help               Help options
+ -n,--instance <arg>     Domain instance name
+ -o,--operation <arg>    Name of Operation : export  or deploy
+ -p,--password <arg>     Admin Node Manager password
+ -pol,--polFile <arg>    PolicyFile File
+ -s,--gatewayURL <arg>   Admin Node Manager URL
+ -t,--type <arg>         Possbile values: fed, polenv
+ -u,--username <arg>     Admin Node Manager username
 ```
+The following sections provide examples of using the tool.
 
-- Deploy Pol and Env to all Gateway
+## API Gateway FED, POL and ENV export and deployment Example
+In this section you can find examples of the commands to deploy FED, POL and ENV files to your target configuration.
+
+### Deploy a Fed to a group of Gateways
+Now you can deploy a FED file to your installation for Axway API Management.For example, 
+- for Windows:
 
 ```bash
-java -jar gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --polFile=D:\\api\\finance.pol --envFile=D:\\api\\finance.env --type=polenv
+java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --fedFile=D:\\api\\finance.fed --type=fed
 ```
-
-
-- Deploy Pol and env to specific Gateway
+- and for Linux:
 
 ```bash
-java -jar gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --instance=server1 --polFile=D:\\api\\finance.pol --envFile=D:\\api\\finance.env --type=polenv
+java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=Finance --fedFile=/home/axway/finance.fed --type=fed
 ```
 
-- Proxy Support 
+### Deploy a FED file to a specific Gateway
+For example,
+- for Windows
 
-If API Gateway installed behind proxy use the following system properties
+```bash
+java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --instance=server1 --fedFile=D:\\api\\finance.fed --type=fed
+```
+- and for Linux
+```bash
+java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=Finance --instance=server1 --fedFile=/home/axway/finance.fed --type=fed
+```
+
+### Deploy the POL and ENV files to all Gateways
+For example,
+- for Windows
+
+```bash
+java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --polFile=D:\\api\\finance.pol --envFile=D:\\api\\finance.env --type=polenv
+```
+- and for Linux
+
+```bash
+java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=Finance --polFile=/home/axway/finance.pol --envFile=/home/axway/finance.env --type=polenv
+```
+
+### Deploy the POL and ENV files to a specific Gateway
+For example,
+- for Windows:
+
+```bash
+java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --instance=server1 --polFile=D:\\api\\finance.pol --envFile=D:\\api\\finance.env --type=polenv
+```
+- and for Linux:
+
+```bash
+java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=Finance --instance=server1 --polFile=/home/axway/finance.pol --envFile=/home/axway/finance.env --type=polenv
+```
+
+### Proxy Support 
+
+If API Gateway installed behind a proxy, use the following system properties
 
 - proxyHost
 - proxyPort
@@ -67,7 +118,7 @@ If API Gateway installed behind proxy use the following system properties
 Example
 
 ```bash
-java -jar -DproxyHost=10.10.2.2 -DproxyPort=8080 --proxyProtocol=https gateway-standalone/target/gateway-standalone-1.0.0.jar -o=deploy -s=https://localhost:8090 -u=admin -p=changeme -g=finance -n=server1 -f=D:\\api\\finance.fed -t=fed
+java -jar -DproxyHost=10.10.2.2 -DproxyPort=8080 --proxyProtocol=https apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar -o=deploy -s=https://localhost:8090 -u=admin -p=changeme -g=finance -n=server1 -f=D:\\api\\finance.fed -t=fed
 ```
 
 ## API Manger API Export and Deployment
@@ -114,6 +165,7 @@ Possible parameters:
 - backendauth - Backend API Authentication e.g
 
 API key:
+
 ```json
 {
 	"parameters": {
@@ -136,8 +188,9 @@ Http Basic Auth:
 }
 ```
 
-Example command
+Example command for windows
+
 ```bash
-java -jar manager-standalone\target\manager-standalone-1.0.0.jar --operation=deploy --url=https://api-env.demo.axway.com:8075 --username=apiadmin --passwrod=changeme --orgname=Axway --artifactlocation=d:\api\petstore.json --backendurl=https://prod.demo.axway.com --outboundcert=d:\api\certs --virtualhost=api.demo.axway.com --apiconflictupgrade=false --backendauth={"parameters": {"apiKey": "4249823490238490","apiKeyField": "KeyId","httpLocation": "QUERYSTRING_PARAMETER"},"type": "apiKey"}
+java -jar apim-deployment-project\manager-standalone\target\manager-standalone-1.0.0.jar --operation=deploy --url=https://api-env.demo.axway.com:8075 --username=apiadmin --passwrod=changeme --orgname=Axway --artifactlocation=d:\api\petstore.json --backendurl=https://prod.demo.axway.com --outboundcert=d:\api\certs --virtualhost=api.demo.axway.com --apiconflictupgrade=false --backendauth={"parameters": {"apiKey": "4249823490238490","apiKeyField": "KeyId","httpLocation": "QUERYSTRING_PARAMETER"},"type": "apiKey"}
 ```
 
