@@ -4,43 +4,43 @@ import java.util.List;
 
 public class APIType {
 
-	private List<FrondendAPI> publishedAPIsByNameAndVersionAndPath;
+	private List<FrontendAPI> publishedAPIsByNameAndVersionAndPath;
 	
-	private List<FrondendAPI> publishedAPIsByNameAndVersion;
+	private List<FrontendAPI> publishedAPIsByNameAndVersion;
 	
-	private List<FrondendAPI> publishedAPIsByName;
+	private List<FrontendAPI> publishedAPIsByName;
 	
-	private List<FrondendAPI> allAPIByName;
+	private List<FrontendAPI> allAPIByName;
 
-	public List<FrondendAPI> getPublishedAPIsByNameAndVersionAndPath() {
+	public List<FrontendAPI> getPublishedAPIsByNameAndVersionAndPath() {
 		return publishedAPIsByNameAndVersionAndPath;
 	}
 
-	public void setPublishedAPIsByNameAndVersionAndPath(List<FrondendAPI> publishedAPIsByNameAndVersionAndPath) {
+	public void setPublishedAPIsByNameAndVersionAndPath(List<FrontendAPI> publishedAPIsByNameAndVersionAndPath) {
 		this.publishedAPIsByNameAndVersionAndPath = publishedAPIsByNameAndVersionAndPath;
 	}
 
-	public List<FrondendAPI> getPublishedAPIsByName() {
+	public List<FrontendAPI> getPublishedAPIsByName() {
 		return publishedAPIsByName;
 	}
 
-	public void setPublishedAPIsByName(List<FrondendAPI> publishedAPIsByName) {
+	public void setPublishedAPIsByName(List<FrontendAPI> publishedAPIsByName) {
 		this.publishedAPIsByName = publishedAPIsByName;
 	}
 
-	public List<FrondendAPI> getAllAPIByName() {
+	public List<FrontendAPI> getAllAPIByName() {
 		return allAPIByName;
 	}
 
-	public void setAllAPIByName(List<FrondendAPI> allAPIByName) {
+	public void setAllAPIByName(List<FrontendAPI> allAPIByName) {
 		this.allAPIByName = allAPIByName;
 	}
 
-	public List<FrondendAPI> getPublishedAPIsByNameAndVersion() {
+	public List<FrontendAPI> getPublishedAPIsByNameAndVersion() {
 		return publishedAPIsByNameAndVersion;
 	}
 
-	public void setPublishedAPIsByNameAndVersion(List<FrondendAPI> publishedAPIsByNameAndVersion) {
+	public void setPublishedAPIsByNameAndVersion(List<FrontendAPI> publishedAPIsByNameAndVersion) {
 		this.publishedAPIsByNameAndVersion = publishedAPIsByNameAndVersion;
 	}
 

@@ -19,7 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axway.apim.model.FrondendAPI;
+import com.axway.apim.model.FrontendAPI;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,30 +33,30 @@ public class ManagerDeployment extends AbstractDeployment implements Constants {
 		// TODO Auto-generated constructor stub
 	}
 
-	public FrondendAPI getAPIById(String url, String apiId)
+	public FrontendAPI getAPIById(String url, String apiId)
 			throws URISyntaxException, ClientProtocolException, IOException {
 
 		URI uri = new URIBuilder(url).setPath(API_BASEPATH + "/proxies/" + apiId).build();
 		HttpResponse httpResponse = axwayClient.get(uri);
 		try {
-			FrondendAPI frondendAPI = objectMapper.readValue(httpResponse.getEntity().getContent(), FrondendAPI.class);
-			return frondendAPI;
+			FrontendAPI frontendAPI = objectMapper.readValue(httpResponse.getEntity().getContent(), FrontendAPI.class);
+			return frontendAPI;
 		} finally {
 			HttpClientUtils.closeQuietly(httpResponse);
 		}
 	}
 
-	public List<FrondendAPI> getAPIByName(String url, String name)
+	public List<FrontendAPI> getAPIByName(String url, String name)
 			throws URISyntaxException, ClientProtocolException, IOException {
 
 		URI uri = new URIBuilder(url).setPath(API_BASEPATH + "/proxies").setParameter("field", "name")
 				.setParameter("op", "eq").setParameter("value", name).build();
 		HttpResponse httpResponse = axwayClient.get(uri);
 		try {
-			List<FrondendAPI> frondendAPIs = objectMapper.readValue(httpResponse.getEntity().getContent(),
-					new TypeReference<List<FrondendAPI>>() {
+			List<FrontendAPI> frontendAPIS = objectMapper.readValue(httpResponse.getEntity().getContent(),
+					new TypeReference<List<FrontendAPI>>() {
 					});
-			return frondendAPIs;
+			return frontendAPIS;
 		} finally {
 			HttpClientUtils.closeQuietly(httpResponse);
 		}
@@ -162,13 +162,13 @@ public class ManagerDeployment extends AbstractDeployment implements Constants {
 		}
 	}
 
-	public String exportAPI(String url, List<FrondendAPI> ids, String filename)
+	public String exportAPI(String url, List<FrontendAPI> ids, String filename)
 			throws URISyntaxException, ClientProtocolException, IOException, APIMException {
 		int status = 0;
 
 		List<NameValuePair> params = new ArrayList<>();
-		for (FrondendAPI frondendAPI : ids) {
-			NameValuePair nameValuePair = new BasicNameValuePair("id", frondendAPI.getId());
+		for (FrontendAPI frontendAPI : ids) {
+			NameValuePair nameValuePair = new BasicNameValuePair("id", frontendAPI.getId());
 			params.add(nameValuePair);
 		}
 
