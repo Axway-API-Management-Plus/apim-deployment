@@ -3,7 +3,7 @@ package com.axway.apim.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FrondendAPI {
+public class FrontendAPI {
 
 	private String id;
 	private String apiId;
@@ -73,9 +73,9 @@ public class FrondendAPI {
 	public boolean equals(Object obj) {
 		if (obj == null)
 			return false;
-		if (obj instanceof FrondendAPI) {
-			FrondendAPI frondendAPI = (FrondendAPI) obj;
-			if (id.equals(frondendAPI.getId()))
+		if (obj instanceof FrontendAPI) {
+			FrontendAPI frontendAPI = (FrontendAPI) obj;
+			if (id.equals(frontendAPI.getId()))
 				return true;
 
 		}

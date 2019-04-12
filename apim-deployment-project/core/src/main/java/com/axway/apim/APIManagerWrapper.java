@@ -35,7 +35,7 @@ import com.axway.apim.model.APIType;
 import com.axway.apim.model.AuthType;
 import com.axway.apim.model.AuthenticationProfile;
 import com.axway.apim.model.CACert;
-import com.axway.apim.model.FrondendAPI;
+import com.axway.apim.model.FrontendAPI;
 import com.axway.apim.model.ManagerInput;
 import com.google.inject.Inject;
 import com.jayway.jsonpath.DocumentContext;
@@ -52,24 +52,24 @@ public class APIManagerWrapper implements Constants {
 			throws ClientProtocolException, URISyntaxException, IOException {
 		APIType apiType = new APIType();
 
-		List<FrondendAPI> publishedAPIsByNameAndVersionAndPath = new ArrayList<>();
-		List<FrondendAPI> publishedAPIsByNameAndVersion = new ArrayList<>();
-		List<FrondendAPI> publishedAPIsByName = new ArrayList<>();
-		List<FrondendAPI> allAPIByName = new ArrayList<>();
+		List<FrontendAPI> publishedAPIsByNameAndVersionAndPath = new ArrayList<>();
+		List<FrontendAPI> publishedAPIsByNameAndVersion = new ArrayList<>();
+		List<FrontendAPI> publishedAPIsByName = new ArrayList<>();
+		List<FrontendAPI> allAPIByName = new ArrayList<>();
 
-		List<FrondendAPI> frondendAPIs = managerDeployment.getAPIByName(url, name);
+		List<FrontendAPI> frontdendAPIs = managerDeployment.getAPIByName(url, name);
 
-		for (FrondendAPI frondendAPI : frondendAPIs) {
+		for (FrontendAPI frontendAPI : frontdendAPIs) {
 
-			allAPIByName.add(frondendAPI);
+			allAPIByName.add(frontendAPI);
 
-			if (frondendAPI.getState().equals(PUBLISHED)) {
-				publishedAPIsByName.add(frondendAPI);
+			if (frontendAPI.getState().equals(PUBLISHED)) {
+				publishedAPIsByName.add(frontendAPI);
 
-				if (version.contains(frondendAPI.getVersion())) {
-					publishedAPIsByNameAndVersion.add(frondendAPI);
-					if (path != null && frondendAPI.getPath().equals(path)) {
-						publishedAPIsByNameAndVersionAndPath.add(frondendAPI);
+				if (version.contains(frontendAPI.getVersion())) {
+					publishedAPIsByNameAndVersion.add(frontendAPI);
+					if (path != null && frontendAPI.getPath().equals(path)) {
+						publishedAPIsByNameAndVersionAndPath.add(frontendAPI);
 					}
 				}
 
@@ -83,17 +83,17 @@ public class APIManagerWrapper implements Constants {
 		return apiType;
 	}
 
-	private void upgradeAPI(String url, FrondendAPI frondendAPI, List<FrondendAPI> allAPIByName,
-			List<FrondendAPI> updatedAllAPIByName, String virtualHost, boolean apiUnpublishedRemove, boolean deprecate,
-			boolean retire) throws ClientProtocolException, URISyntaxException, IOException, APIMException {
+	private void upgradeAPI(String url, FrontendAPI frontendAPI, List<FrontendAPI> allAPIByName,
+							List<FrontendAPI> updatedAllAPIByName, String virtualHost, boolean apiUnpublishedRemove, boolean deprecate,
+							boolean retire) throws ClientProtocolException, URISyntaxException, IOException, APIMException {
 
-		String id = frondendAPI.getId();
-		String backendAPIId = frondendAPI.getApiId();
+		String id = frontendAPI.getId();
+		String backendAPIId = frontendAPI.getApiId();
 		updatedAllAPIByName.removeAll(allAPIByName);
-		FrondendAPI newFrondendAPI = updatedAllAPIByName.get(0); // New API
+		FrontendAPI newFrontendAPI = updatedAllAPIByName.get(0); // New API
 																	// id
-		String newId = newFrondendAPI.getId();
-		managerDeployment.publishAPI(url, newId, newFrondendAPI.getName(), virtualHost);
+		String newId = newFrontendAPI.getId();
+		managerDeployment.publishAPI(url, newId, newFrontendAPI.getName(), virtualHost);
 		managerDeployment.upgradeAPI(url, newId, id, deprecate, retire);
 		managerDeployment.unpublishAPI(url, id);
 		if (apiUnpublishedRemove) {
@@ -107,7 +107,7 @@ public class APIManagerWrapper implements Constants {
 			KeyStoreException, URISyntaxException, APIMException {
 
 		managerDeployment.init(url, username, password);
-		List<FrondendAPI> virtualizedApis = getFrontendAPIs(url, apiName, version, null)
+		List<FrontendAPI> virtualizedApis = getFrontendAPIs(url, apiName, version, null)
 				.getPublishedAPIsByNameAndVersion();
 
 		if (virtualizedApis.isEmpty()) {
@@ -158,7 +158,9 @@ public class APIManagerWrapper implements Constants {
 					throw e;
 				}
 			}
-			documentContext.set("$.frontend.apis[0].serviceProfiles._default.basePath", backendURL);
+			if(backendURL != null) {
+				documentContext.set("$.frontend.apis[0].serviceProfiles._default.basePath", backendURL);
+			}
 
 			if (outboundCertFolder != null) {
 
@@ -184,7 +186,9 @@ public class APIManagerWrapper implements Constants {
 			String apiVersion = documentContext.read("$.frontend.apis[0].version");
 			String path = documentContext.read("$.frontend.apis[0].path");
 			
-			String apiState = documentContext.read("$.frontend.apis[0].path");
+			String apiState = documentContext.read("$.frontend.apis[0].state");
+
+			logger.info("API state {}", apiState);
 			
 			if(!apiState.equals(PUBLISHED)){
 				throw new APIMException("API artifact "+apiName +" is not in published state, exiting...");
@@ -195,9 +199,9 @@ public class APIManagerWrapper implements Constants {
 			managerDeployment.init(url, username, password);
 			APIType apiType = getFrontendAPIs(url, apiName, version, path);
 
-			List<FrondendAPI> publishedAPIsByNameAndVersionAndPath = apiType.getPublishedAPIsByNameAndVersionAndPath();
-			List<FrondendAPI> publishedAPIsByName = apiType.getPublishedAPIsByName();
-			List<FrondendAPI> allAPIByName = apiType.getAllAPIByName();
+			List<FrontendAPI> publishedAPIsByNameAndVersionAndPath = apiType.getPublishedAPIsByNameAndVersionAndPath();
+			List<FrontendAPI> publishedAPIsByName = apiType.getPublishedAPIsByName();
+			List<FrontendAPI> allAPIByName = apiType.getAllAPIByName();
 
 			String orgId = managerDeployment.getOrganizationId(url, orgName);
 
@@ -214,37 +218,37 @@ public class APIManagerWrapper implements Constants {
 
 					logger.info("Updating the exiting API {} with version {} and path {} ", apiName, apiVersion, path);
 
-					FrondendAPI frondendAPI = publishedAPIsByNameAndVersionAndPath.get(0);
+					FrontendAPI frontendAPI = publishedAPIsByNameAndVersionAndPath.get(0);
 					managerDeployment.importAPI(url, orgId, content);
-					List<FrondendAPI> updatedVirtualizedApis = getFrontendAPIs(url, apiName, version, null)
+					List<FrontendAPI> updatedVirtualizedApis = getFrontendAPIs(url, apiName, version, null)
 							.getAllAPIByName();
 					updatedVirtualizedApis.removeAll(allAPIByName);
-					upgradeAPI(url, frondendAPI, allAPIByName, updatedVirtualizedApis, virtualHost, apiUnpublishedRemove,
+					upgradeAPI(url, frontendAPI, allAPIByName, updatedVirtualizedApis, virtualHost, apiUnpublishedRemove,
 							false, false);
 
 				}else{
 					//publishing API with different version
 					logger.info(" API {} is in published state in target server", apiName);
-					FrondendAPI frondendAPI = publishedAPIsByName.get(0);
+					FrontendAPI frontendAPI = publishedAPIsByName.get(0);
 					managerDeployment.importAPI(url, orgId, content);
-					List<FrondendAPI> updatedVirtualizedApis = getFrontendAPIs(url, apiName, version, null)
+					List<FrontendAPI> updatedVirtualizedApis = getFrontendAPIs(url, apiName, version, null)
 							.getAllAPIByName();
 					updatedVirtualizedApis.removeAll(allAPIByName);
-					logger.info("Upgrading access from  API {} and version to API {} and version", frondendAPI.getName(), frondendAPI.getVersion(), apiName, apiVersion);
+					logger.info("Upgrading access from  API {} and version to API {} and version", frontendAPI.getName(), frontendAPI.getVersion(), apiName, apiVersion);
 					//As api version is different not deleting API
-					upgradeAPI(url, frondendAPI, allAPIByName, updatedVirtualizedApis, virtualHost, false,
+					upgradeAPI(url, frontendAPI, allAPIByName, updatedVirtualizedApis, virtualHost, false,
 							false, false);
 				}
 
 			} else {
 				logger.info(" API {} with version {} and path {} is not available in targer server", apiName, apiVersion, path);
 				managerDeployment.importAPI(url, orgId, content);
-				List<FrondendAPI> updatedVirtualizedApis = getFrontendAPIs(url, apiName, version, null)
+				List<FrontendAPI> updatedVirtualizedApis = getFrontendAPIs(url, apiName, version, null)
 						.getAllAPIByName();
 				updatedVirtualizedApis.removeAll(allAPIByName);
-				FrondendAPI frondendAPI = updatedVirtualizedApis.get(0);
-				String newId = frondendAPI.getId();
-				managerDeployment.publishAPI(url, newId, frondendAPI.getName(), virtualHost);
+				FrontendAPI frontendAPI = updatedVirtualizedApis.get(0);
+				String newId = frontendAPI.getId();
+				managerDeployment.publishAPI(url, newId, frontendAPI.getName(), virtualHost);
 			}
 		} finally {
 			if (inputStream != null)
