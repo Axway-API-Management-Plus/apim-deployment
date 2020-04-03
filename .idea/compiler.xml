@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="gateway-plugin-deploy-polenv" />
+        <module name="gateway-plugin-export-polenv" />
+        <module name="manager-plugin" />
+        <module name="gateway-plugin" />
+        <module name="gateway-plugin-export-fed" />
+        <module name="manager-standalone" />
+        <module name="core" />
+        <module name="manager-plugin-deploy" />
+        <module name="gateway-standalone" />
+        <module name="gateway-plugin-deploy-fed" />
+        <module name="manager-plugin-export" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="apim-deployment" target="1.8" />
+      <module name="apim-deployment-project" target="1.8" />
+      <module name="apim-deployment-samples" target="1.8" />
+      <module name="core" target="1.8" />
+      <module name="gateway-plugin" target="1.8" />
+      <module name="gateway-plugin-deploy-fed" target="1.8" />
+      <module name="gateway-plugin-deploy-polenv" target="1.8" />
+      <module name="gateway-plugin-export-fed" target="1.8" />
+      <module name="gateway-plugin-export-polenv" target="1.8" />
+      <module name="gateway-standalone" target="1.8" />
+      <module name="manager-plugin" target="1.8" />
+      <module name="manager-plugin-deploy" target="1.8" />
+      <module name="manager-plugin-export" target="1.8" />
+      <module name="manager-standalone" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.SSLContext;
+//import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -28,13 +28,13 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
+//import org.apache.http.config.Registry;
+//import org.apache.http.config.RegistryBuilder;
+//import org.apache.http.conn.routing.HttpRoute;
+//import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+//import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -72,22 +72,22 @@ public class AxwayClient {
 
 	public void createConnection(String apiManagerURL, String username, String password)
 			throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-
+//
 		URI uri = URI.create(apiManagerURL);
-		SSLContext sslContext = SSLContextBuilder.create().loadTrustMaterial(null, new TrustSelfSignedStrategy())
-				.build();
-		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
-		Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
-				.register(uri.getScheme(), sslsf).build();
-
-		cm = new PoolingHttpClientConnectionManager(registry);
-		// Increase max total connection to 200
-		cm.setMaxTotal(2);
-		// Increase default max connection per route to 20
-		cm.setDefaultMaxPerRoute(2);
-		// Increase max connections for localhost:80 to 50
+//		SSLContext sslContext = SSLContextBuilder.create().loadTrustMaterial(null, new TrustSelfSignedStrategy())
+//				.build();
+//		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, new NoopHostnameVerifier());
+//		Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+//				.register(uri.getScheme(), sslsf).build();
+//
+//		cm = new PoolingHttpClientConnectionManager(registry);
+//		// Increase max total connection to 200
+//		cm.setMaxTotal(2);
+//		// Increase default max connection per route to 20
+//		cm.setDefaultMaxPerRoute(2);
+//		// Increase max connections for localhost:80 to 50
 		credsProvider = new BasicCredentialsProvider();
-
+//
 		target = new HttpHost(uri.getHost(), uri.getPort(), uri.getScheme());
 		credsProvider.setCredentials(new AuthScope(target.getHostName(), target.getPort()),
 				new UsernamePasswordCredentials(username, password));
@@ -100,10 +100,20 @@ public class AxwayClient {
 		localContext = HttpClientContext.create();
 		localContext.setAuthCache(authCache);
 
-		cm.setMaxPerRoute(new HttpRoute(target), 2);
+//		cm.setMaxPerRoute(new HttpRoute(target), 2);
+//
+//		httpClient = HttpClientBuilder.create().disableRedirectHandling().setConnectionManager(cm)
+//				.setDefaultCredentialsProvider(credsProvider).setSSLSocketFactory(sslsf).build();
 
-		httpClient = HttpClientBuilder.create().disableRedirectHandling().setConnectionManager(cm)
-				.setDefaultCredentialsProvider(credsProvider).setSSLSocketFactory(sslsf).build();
+
+		SSLContextBuilder builder = new SSLContextBuilder();
+		builder.loadTrustMaterial(null, (x509CertChain, authType) -> true);
+		SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(builder.build(),  NoopHostnameVerifier.INSTANCE);
+		httpClient = HttpClientBuilder.create().disableRedirectHandling().setSSLSocketFactory(sslConnectionSocketFactory).setDefaultCredentialsProvider(credsProvider)
+				.setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+
+
+
 
 	}
 

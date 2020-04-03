@@ -102,25 +102,25 @@ public class GatewayDeployment extends AbstractDeployment{
 
 		URI groupURI = null;
 
-		String phycialgroupName = getPhycialGroupName(groupName, apiGatewayURL);
-		logger.info("Physical Group name : {}", phycialgroupName);
-		String phycialInstanceName = null;
+		String physicalGroupName = getPhycialGroupName(groupName, apiGatewayURL);
+		logger.info("Physical Group name : {}", physicalGroupName);
+		String physicalInstanceName = null;
 
 		if (instanceName == null) {
-			groupURI = new URIBuilder(apiGatewayURL).setPath("/api/topology/services/" + phycialgroupName).build();
+			groupURI = new URIBuilder(apiGatewayURL).setPath("/api/topology/services/" + physicalGroupName).build();
 			logger.info("Get Group Details {}", groupURI);
 			HttpResponse httpResponse = axwayClient.get(groupURI);
-			phycialInstanceName = process200Response(httpResponse, "Instance is not available", "$.result[0].id");
+			physicalInstanceName = process200Response(httpResponse, "Instance is not available", "$.result[0].id");
 
 		} else {
-			groupURI = new URIBuilder(apiGatewayURL).setPath("/api/topology/services/id/" + phycialgroupName)
+			groupURI = new URIBuilder(apiGatewayURL).setPath("/api/topology/services/id/" + physicalGroupName)
 					.setParameter("serviceName", groupName).build();
 			logger.info("Getting Physical Instance name URI {}", groupURI);
 			HttpResponse httpResponse = axwayClient.get(groupURI);
-			phycialInstanceName = process200Response(httpResponse, "Instance is not available", "$.result");
+			physicalInstanceName = process200Response(httpResponse, "Instance is not available", "$.result");
 		}
-		logger.info("Phycial Instance name {}", phycialInstanceName);
-		return phycialInstanceName;
+		logger.info("Physical Instance name {}", physicalInstanceName);
+		return physicalInstanceName;
 	}
 
 	public List<String> getServerList(String groupName, String apiGatewayURL, String instanceName,
@@ -153,8 +153,8 @@ public class GatewayDeployment extends AbstractDeployment{
 					.setParameter("serviceName", instanceName).build();
 			logger.info("Getting Physical Instance name URI {}", groupURI);
 			HttpResponse httpResponse = axwayClient.get(groupURI);
-			String phycialInstanceName = process200Response(httpResponse, "Instance is not available", "$.result");
-			servers.add(phycialInstanceName);
+			String physicalInstanceName = process200Response(httpResponse, "Instance is not available", "$.result");
+			servers.add(physicalInstanceName);
 		}
 		return servers;
 	}
@@ -166,8 +166,8 @@ public class GatewayDeployment extends AbstractDeployment{
 
 		logger.info("Getting Physical Group name URI {}", groupURI);
 		HttpResponse httpResponse = axwayClient.get(groupURI);
-		String phycialgroupName = process200Response(httpResponse, "Group is not available", "$.result");
-		return phycialgroupName;
+		String physicalGroupName = process200Response(httpResponse, "Group is not available", "$.result");
+		return physicalGroupName;
 	}
 
 	private void writeBase64asFile(String filename, String base64Data) throws IOException {

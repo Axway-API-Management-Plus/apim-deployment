@@ -89,7 +89,7 @@ public class ManagerDeployment extends AbstractDeployment implements Constants {
 
 	public void deleteBackendAPI(String url, String backendId)
 			throws URISyntaxException, ClientProtocolException, IOException {
-		logger.info("Deleting BackeEnd API");
+		logger.info("Deleting BackEnd API");
 		URI uri = new URIBuilder(url).setPath(API_BASEPATH + "/apirepo/" + backendId).build();
 		HttpResponse httpResponse = axwayClient.delete(uri);
 		try {

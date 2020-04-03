@@ -172,7 +172,7 @@ public class Main {
 				.build();
 
 		Option type = Option.builder("t").longOpt("type").required(false).hasArg(true)
-				.desc("Possbile values: fed, polenv").build();
+				.desc("Possible values: fed, polenv").build();
 
 		options.addOption(operation);
 		options.addOption(url);
