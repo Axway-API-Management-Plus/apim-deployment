@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.axway.apim</groupId>
 		<artifactId>apim-deployment</artifactId>
-		<version>${revision}</version>
+		<version>1.0.3</version>
 	</parent>
 	<artifactId>apim-deployment-project</artifactId>
 	<packaging>pom</packaging>

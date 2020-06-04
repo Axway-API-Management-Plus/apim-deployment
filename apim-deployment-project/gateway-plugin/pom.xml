@@ -6,36 +6,36 @@
 	<parent>
 		<groupId>com.axway.apim</groupId>
 		<artifactId>apim-deployment-project</artifactId>
-		<version>${revision}</version>
+		<version>1.0.3</version>
 	</parent>
+	<version>1.0.3</version>
+	<groupId>com.axway.apim</groupId>
 	<artifactId>gateway-plugin</artifactId>
 	<name>gateway-plugin</name>
 	<packaging>maven-plugin</packaging>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
-			<version>3.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-core</artifactId>
-			<version>3.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
 			<artifactId>maven-plugin-annotations</artifactId>
-			<version>3.6.0</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.axway.apim</groupId>
 			<artifactId>core</artifactId>
-			<version>${revision}</version>
+			<version>1.0.3</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -51,5 +51,27 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<!--        <repository>-->
+		<!--            <id>axwayapim</id>-->
+		<!--            <url>https://pkgs.dev.azure.com/axwayapim/_packaging/axwayapim/maven/v1</url>-->
+		<!--            <releases>-->
+		<!--                <enabled>true</enabled>-->
+		<!--            </releases>-->
+		<!--            <snapshots>-->
+		<!--                <enabled>true</enabled>-->
+		<!--            </snapshots>-->
+		<!--        </repository>-->
+
+	</repositories>
+	<distributionManagement>
+		<!--        <repository>-->
+		<!--            <id>axwayapim</id>-->
+		<!--            <url>https://pkgs.dev.azure.com/axwayapim/_packaging/axwayapim/maven/v1</url>-->
+		<!--        </repository>-->
+
+	</distributionManagement>
+
 
 </project>

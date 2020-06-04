@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.axway.apim</groupId>
 		<artifactId>apim-deployment-samples</artifactId>
-		<version>${revision}</version>
+		<version>1.0.3</version>
 	</parent>
 	<artifactId>gateway-plugin-export-fed</artifactId>
 	<properties>
@@ -15,7 +15,6 @@
 			<plugin>
 				<groupId>com.axway.apim</groupId>
 				<artifactId>gateway-plugin</artifactId>
-				<version>${revision}</version>
 				<configuration>
 					<host>localhost</host>
 					<port>8090</port>
@@ -32,7 +31,6 @@
 						<goals>
 							<goal>apigateway-export</goal>
 						</goals>
-
 					</execution>
 				</executions>
 			</plugin>

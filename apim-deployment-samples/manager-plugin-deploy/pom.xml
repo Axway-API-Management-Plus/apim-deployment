@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.axway.apim</groupId>
 		<artifactId>apim-deployment-samples</artifactId>
-		<version>${revision}</version>
+		<version>1.0.3</version>
 	</parent>
 	<artifactId>manager-plugin-deploy</artifactId>
 
@@ -13,7 +13,6 @@
 			<plugin>
 				<groupId>com.axway.apim</groupId>
 				<artifactId>manager-plugin</artifactId>
-				<version>${revision}</version>
 				<configuration>
 					<host>10.129.60.57</host>
 					<port>8075</port>
