@@ -1,7 +1,18 @@
 
 # Amplify APIM Deployment Utilities
+
+API Gateway pacakge and deploy tools ( https://docs.axway.com/bundle/axway-open-docs/page/docs/apim_installation/apigtw_install/install_deploy_tools/index.html)  has following limitations and user should install the software on Jenkins / other Continous Integraion  machine / create docker image to access the CLI. 
+
+1. Does not provide a maven plugin to deploy fed, pol and env files. 
+2. No CLI support for downloading fed from existing gateway. 
+3. apimanager-promote (https://docs.axway.com/bundle/axway-open-docs/page/docs/apim_administration/apimgr_admin/api_mgmt_promote/index.html) CLI does not provide an option to environmentalize backend URL, certficates, virtualhost, backend auth etc..
+
+
+
 Axway Amplify APIM deployment project provides utility to  export and import API, fed, pol and env artifacts.
 The utilities are delivered as standalone and maven plugin for CI tool integration. 
+
+CLI utility uses APIM product APIs (API Gateway API - http://apidocs.axway.com/swagger-ui/index.html?productname=apigateway&productversion=7.7.0&filename=api-gateway-swagger.json, API Manager API - http://apidocs.axway.com/swagger-ui/index.html?productname=apimanager&productversion=7.7.0&filename=api-manager-V_1_3-swagger.json) internally to interact Axway APIM. 
 
 ## Prerequisites
 
