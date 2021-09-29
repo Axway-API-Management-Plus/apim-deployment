@@ -13,8 +13,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <revision>1.0.3</revision>
-        <jackson.version>2.10.1</jackson.version>
-        <httpclient.version>4.5.6</httpclient.version>
+        <jackson.version>2.10.5.1</jackson.version>
+        <httpclient.version>4.5.13</httpclient.version>
     </properties>
 
     <dependencyManagement>
@@ -86,7 +86,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <version>[4.13.1,)</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
