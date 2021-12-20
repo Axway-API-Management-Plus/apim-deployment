@@ -11,8 +11,6 @@
 	<modules>
 		<module>core</module>
 		<module>gateway-plugin</module>
-		<module>manager-plugin</module>
 		<module>gateway-standalone</module>
-		<module>manager-standalone</module>
 	</modules>
 </project>
