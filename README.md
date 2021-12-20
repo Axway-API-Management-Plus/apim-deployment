@@ -36,12 +36,12 @@ CLI utility uses APIM product APIs (API Gateway API - http://apidocs.axway.com/s
 - Ignore maven plugin test project
 
 ```bash
-$mvn clean install -Dmaven.test.skip=true -pl !apim-deployment-samples\gateway-plugin-deploy-fed,!apim-deployment-samples\gateway-plugin-deploy-polenv,!apim-deployment-samples\gateway-plugin-export-fed,!apim-deployment-samples\gateway-plugin-export-polenv,!apim-deployment-samples\manager-plugin-deploy,!apim-deployment-samples\manager-plugin-export
+$mvn clean install -Dmaven.test.skip=true -pl !apim-deployment-samples\gateway-plugin-deploy-fed,!apim-deployment-samples\gateway-plugin-deploy-polenv,!apim-deployment-samples\gateway-plugin-export-fed,!apim-deployment-samples\gateway-plugin-export-polenv
 ```
 Example for Linux:
 
 ```bash
-#mvn clean install -Dmaven.test.skip=true -pl \!apim-deployment-samples/gateway-plugin-deploy-fed,\!apim-deployment-samples/gateway-plugin-deploy-polenv,\!apim-deployment-samples/gateway-plugin-export-fed,\!apim-deployment-samples/gateway-plugin-export-polenv,\!apim-deployment-samples/manager-plugin-deploy,\!apim-deployment-samples/manager-plugin-export
+#mvn clean install -Dmaven.test.skip=true -pl \!apim-deployment-samples/gateway-plugin-deploy-fed,\!apim-deployment-samples/gateway-plugin-deploy-polenv,\!apim-deployment-samples/gateway-plugin-export-fed,\!apim-deployment-samples/gateway-plugin-export-polenv
 ```
 ## Using the tool
 You can run the following command to see available options:
