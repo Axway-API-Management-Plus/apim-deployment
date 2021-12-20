@@ -17,14 +17,14 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="axwayapim" />
-      <option name="name" value="axwayapim" />
-      <option name="url" value="https://pkgs.dev.azure.com/axwayapim/_packaging/axwayapim/maven/v1" />
-    </remote-repository>
-    <remote-repository>
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="axwayapim" />
+      <option name="name" value="axwayapim" />
+      <option name="url" value="https://pkgs.dev.azure.com/axwayapim/_packaging/axwayapim/maven/v1" />
     </remote-repository>
   </component>
 </project>

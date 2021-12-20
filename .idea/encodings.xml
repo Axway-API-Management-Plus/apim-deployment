@@ -2,9 +2,14 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/apim-deployment-project/core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/apim-deployment-project/core/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/apim-deployment-project/gateway-plugin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/apim-deployment-project/gateway-plugin/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/apim-deployment-project/gateway-standalone/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/apim-deployment-project/gateway-standalone/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/apim-deployment-project/manager-plugin/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/apim-deployment-project/manager-plugin/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/apim-deployment-project/manager-standalone/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/apim-deployment-project/manager-standalone/src/main/resources" charset="UTF-8" />
   </component>
 </project>

@@ -1,20 +1,11 @@
 package com.axway.apim;
 
 public interface Constants {
-	
+
 	String POLICY_ATTACHMENT_NAME = "policyFile";
 
 	String ENV_ATTACHMENT_NAME = "environmentFile";
 
 	String FED_ATTACHMENT_NAME = "file";
-	
-	String API_BASEPATH = "/api/portal/v1.3";
 
-	String PUBLISHED = "published";
-	
-	String UNPUBLISHED = "unpublished";
-	
-	String ALL = "all";
-	
-	String PENDING = "pending";
 }

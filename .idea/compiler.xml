@@ -6,17 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="manager-plugin" />
-        <module name="gateway-plugin-deploy-polenv" />
-        <module name="gateway-plugin-export-polenv" />
-        <module name="gateway-plugin" />
-        <module name="manager-plugin-export" />
-        <module name="gateway-plugin-export-fed" />
         <module name="core" />
-        <module name="manager-plugin-deploy" />
         <module name="gateway-standalone" />
+        <module name="gateway-plugin-deploy-polenv" />
+        <module name="gateway-plugin" />
+        <module name="gateway-plugin-export-fed" />
         <module name="gateway-plugin-deploy-fed" />
-        <module name="manager-standalone" />
+        <module name="gateway-plugin-export-polenv" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
