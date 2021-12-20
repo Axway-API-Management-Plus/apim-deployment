@@ -1,18 +1,17 @@
 
 # Amplify APIM Deployment Utilities
 
-API Gateway pacakge and deploy tools ( https://docs.axway.com/bundle/axway-open-docs/page/docs/apim_installation/apigtw_install/install_deploy_tools/index.html)  has following limitations and user should install the software on Jenkins / other Continous Integraion  machine / create docker image to access the CLI. 
+API Gateway package and deploy tools ( https://docs.axway.com/bundle/axway-open-docs/page/docs/apim_installation/apigtw_install/install_deploy_tools/index.html)  has the following limitations and user should install the software on Jenkins / other Continuous Integration  machine / create docker image to access the CLI. 
 
 1. Does not provide a maven plugin to deploy fed, pol and env files. 
 2. No CLI support for downloading fed from existing gateway. 
-3. apimanager-promote (https://docs.axway.com/bundle/axway-open-docs/page/docs/apim_administration/apimgr_admin/api_mgmt_promote/index.html) CLI does not provide an option to environmentalize backend URL, certficates, virtualhost, backend auth etc..
 
 
 
-Axway Amplify APIM deployment project provides utility to  export and import API, fed, pol and env artifacts.
-The utilities are delivered as standalone and maven plugin for CI tool integration. 
+Axway Amplify APIM deployment project provides utility to  export and import fed, pol and env artifacts.
+The utilities are delivered as standalone CLI and maven plugin for CI tool integration. 
 
-CLI utility uses APIM product APIs (API Gateway API - http://apidocs.axway.com/swagger-ui/index.html?productname=apigateway&productversion=7.7.0&filename=api-gateway-swagger.json, API Manager API - http://apidocs.axway.com/swagger-ui/index.html?productname=apimanager&productversion=7.7.0&filename=api-manager-V_1_3-swagger.json) internally to interact Axway APIM. 
+CLI utility uses APIM product APIs (API Gateway API - http://apidocs.axway.com/swagger-ui/index.html?productname=apigateway&productversion=7.7.0&filename=api-gateway-swagger.json) internally to interact with Axway APIM. 
 
 ## Prerequisites
 
@@ -132,78 +131,7 @@ Example
 java -jar -DproxyHost=10.10.2.2 -DproxyPort=8080 --proxyProtocol=https apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar -o=deploy -s=https://localhost:8090 -u=admin -p=changeme -g=finance -n=server1 -f=D:\\api\\finance.fed -t=fed
 ```
 
-## API Manger API Export and Deployment
 
-API manger export accepts api name and version as input and json ( contains frontend and backend security credentials, outbound certs and CORS settings) as output. 
-
-API manger deploy operation accepts backend URL, backend Auth, virtual host and outbound cert and deploy to target server. 
-
-### API Manger API Export Example
-
-Possible parameters
-
-- operation* - Name of the operation e.g export
-- url* - API Manger URL e.g https://api-env.demo.axway.com:8075
-- username* - API manger username
-- password* - API manger password
-- apiname*  - Name of API deployed on API manager
-- version  - Version of API
-- artifactlocation* - Location where API export is going to be stored
-
-* denotes mandatory parameters 
-
-Example Command for windows:
-
-```bash
-java -jar apim-deployment-project\manager-standalone\target\manager-standalone-1.0.0.jar --operation=export --url=https://api-env.demo.axway.com:8075 --username=apiadmin --password=changeme --apiname=petstore --version=1.0.0 --artifactlocation=d:\api\petstore.json
-```
-
-### API Manger API Deployment Example
-
-Possible parameters: 
-
-- operation* - Name of the operation e.g deploy 
-- url* - API Manger URL e.g https://api-env.demo.axway.com:8075
-- username* - API manger username
-- password* - API manger password
-- artifactlocation* - Location where API export is available
-- orgname* - API manger Developer Organization name
-- backendurl - Backend API URL
-- outboundcert - Outbound certificate directory e.g d:\api\certs. Directory should contain x509 certificate
-- virtualhost - Virtual host for API
-- apiconflictupgrade - If apiconflictupgrade flag set to true, api will be upgraded if there is a conflict with name, version and 
-- apiunpublishedremove - if apiunpublishedremove flag set to true, unpublished api will be deleted. 
-- backendauth - Backend API Authentication e.g
-
-API key:
-
-```json
-{
-	"parameters": {
-		"apiKey": "4249823490238490",
-		"apiKeyField": "KeyId",
-		"httpLocation": "QUERYSTRING_PARAMETER"
-	},
-	"type": "apiKey"
-}
-```
-Http Basic Auth:
-
-```json
-{
-	"parameters": {
-		"username": "user2",
-		"password": "user2"
-	},
-	"type": "http_basic"
-}
-```
-
-Example command for windows
-
-```bash
-java -jar apim-deployment-project\manager-standalone\target\manager-standalone-1.0.0.jar --operation=deploy --url=https://api-env.demo.axway.com:8075 --username=apiadmin --password=changeme --orgname=Axway --artifactlocation=d:\api\petstore.json --backendurl=https://prod.demo.axway.com --outboundcert=d:\api\certs --virtualhost=api.demo.axway.com --apiconflictupgrade=false --backendauth={"parameters": {"apiKey": "4249823490238490","apiKeyField": "KeyId","httpLocation": "QUERYSTRING_PARAMETER"},"type": "apiKey"}
-```
 ## Contributing
 Please read [Contributing.md](https://github.com/Axway-API-Management-Plus/Common/blob/master/Contributing.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
