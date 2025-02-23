@@ -12,7 +12,7 @@ jobs:
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
-          java-version: '8'
+          java-version: '11'
           distribution: 'zulu'
       - name: Build with Maven
         run: mvn clean install -Dmaven.test.skip=true -pl \!apim-deployment-samples/gateway-plugin-deploy-fed,\!apim-deployment-samples/gateway-plugin-deploy-polenv,\!apim-deployment-samples/gateway-plugin-export-fed,\!apim-deployment-samples/gateway-plugin-export-polenv

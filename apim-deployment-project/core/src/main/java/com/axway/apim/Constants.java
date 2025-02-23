@@ -1,11 +1,15 @@
 package com.axway.apim;
 
-public interface Constants {
+public class Constants {
 
-	String POLICY_ATTACHMENT_NAME = "policyFile";
+    private Constants() {
+        throw new IllegalStateException("Utility class");
+    }
 
-	String ENV_ATTACHMENT_NAME = "environmentFile";
+	public static final String POLICY_ATTACHMENT_NAME = "policyFile";
 
-	String FED_ATTACHMENT_NAME = "file";
+    public static final String ENV_ATTACHMENT_NAME = "environmentFile";
+
+    public static final String FED_ATTACHMENT_NAME = "file";
 
 }

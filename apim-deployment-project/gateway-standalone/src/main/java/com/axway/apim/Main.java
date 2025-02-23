@@ -1,196 +1,158 @@
 package com.axway.apim;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.UnrecognizedOptionException;
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axway.apim.DeploymentModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-
 public class Main {
 
-	private static Logger logger = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-	public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
 
-		Orchestrator orchestrator = new Orchestrator();
-		Injector injector = Guice.createInjector(new DeploymentModule());
-		injector.injectMembers(orchestrator);
+        Options options = options();
+        if (checkForHelp(args)) {
+            usage();
+            System.exit(1);
+        }
+        CommandLineParser parser = new DefaultParser();
+        CommandLine line = null;
+        try {
+            line = parser.parse(options, args);
+        } catch (ParseException e) {
+            LOGGER.error(e.getMessage());
+            usage();
+            System.exit(1);
+        }
 
-		// download fed
-		// args = new String[] { "--operation=download",
-		// "--gatewayURL=https://localhost:8090",
-		// "--username=admin", "--password=changeme","--group=lambda",
-		// "--fedFile=D:\\api\\lambda.fed", "--type=fed" };
+        String operation = line.getOptionValue("operation");
+        String type = line.getOptionValue("type");
 
-		// download polenv
-		// args = new String[] { "--operation=download",
-		// "--gatewayURL=https://localhost:8090", "--username=admin",
-		// "--password=changeme", "--group=lambda",
-		// "--envFile=D:\\api\\lambda.env",
-		// "--polFile=D:\\api\\lambda.pol","--type=polenv" };
+        String url = line.getOptionValue("s");
+        String username = line.getOptionValue("username");
+        String password = line.getOptionValue("password");
+        String groupName = line.getOptionValue("group");
+        boolean inSecure = line.hasOption("insecure");
 
-		// deploy polenv
-//		args = new String[] { "--operation=deploy", "--gatewayURL=https://localhost:8090", "--username=admin",
-	//				"--password=changeme", "--group=lambda", "--envFile=D:\\api\\lambda.env",
-	//				"--polFile=D:\\api\\lambda.pol", "--type=polenv" };
-		
-		//deploy fed
-		
-//		args = new String[] { "--operation=deploy", "--gatewayURL=https://localhost:8090", "--username=admin",
-//				"--password=changeme", "--group=lambda", "--fedFile=D:\\api\\lambda.fed",
-//				"--polFile=D:\\api\\lambda.pol", "--type=fed" };
+        String fedFileName = null;
+        String polFileName = null;
+        String envFileName = null;
+        String instanceName = null;
 
-		Options options = options();
+        if (line.hasOption('n')) {
+            instanceName = line.getOptionValue("n");
+        }
 
-		if (checkForHelp(args, options)) {
-			usage();
-			System.exit(1);
-		}
+        if (type.equalsIgnoreCase("fed")) {
+            if (line.hasOption('f')) {
+                fedFileName = line.getOptionValue("f");
+            } else {
+                LOGGER.error("Provide fed location");
+                System.exit(1);
+            }
+        } else if (type.equals("polenv")) {
+            if (line.hasOption("pol")) {
+                polFileName = line.getOptionValue("pol");
+            } else {
+                LOGGER.error("Provide policy location");
+                System.exit(1);
+            }
 
-		CommandLineParser parser = new DefaultParser();
+            if (line.hasOption('e')) {
+                envFileName = line.getOptionValue("e");
+            } else {
+                LOGGER.error("Provide enviroment location");
+                System.exit(1);
+            }
 
-		CommandLine line = null;
+        } else {
+            LOGGER.error("Provide proper type: fed or polenv");
+            System.exit(1);
+        }
 
-		try {
-			line = parser.parse(options, args);
-		} catch (UnrecognizedOptionException e) {
-			logger.error(e.getMessage());
-			usage();
-			System.exit(1);
-		}
+        AxwayClient axwayClient = AxwayClient.getInstance();
+        GatewayDeployment gatewayDeployment = new GatewayDeployment(axwayClient);
+        Orchestrator orchestrator = new Orchestrator(gatewayDeployment);
+        if (operation.equalsIgnoreCase("export")) {
+            orchestrator.download(url, username, password, groupName, instanceName, type, fedFileName, polFileName,
+                envFileName, inSecure);
+        } else if (operation.equalsIgnoreCase("deploy")) {
+            orchestrator.deploy(url, username, password, groupName, instanceName, type, fedFileName, polFileName,
+                envFileName, inSecure);
+        } else {
+            LOGGER.error("Provide valid operation name: possible values download or deploy");
+            System.exit(1);
+        }
 
-		String operation = line.getOptionValue("operation");
-		String type = line.getOptionValue("type");
+    }
 
-		String url = line.getOptionValue("s");
-		String username = line.getOptionValue("username");
-		String password = line.getOptionValue("password");
-		String groupName = line.getOptionValue("group");
+    private static boolean checkForHelp(String[] args) {
 
-		String fedFileName = null;
-		String polFileName = null;
-		String envFileName = null;
-		String instanceName = null;
+        if (args.length == 0)
+            return true;
 
-		if (line.hasOption('n')) {
-			instanceName = line.getOptionValue("n");
-		}
+        for (String argument : args) {
+            if (argument.equals("-h") || argument.equals("--help")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-		if (type.equalsIgnoreCase("fed")) {
-			if (line.hasOption('f')) {
-				fedFileName = line.getOptionValue("f");
-			} else {
-				logger.error("Provide fed location");
-				System.exit(1);
-			}
-		} else if (type.equals("polenv")) {
-			if (line.hasOption("pol")) {
-				polFileName = line.getOptionValue("pol");
-			} else {
-				logger.error("Provide policy location");
-				System.exit(1);
-			}
+    private static Options options() {
+        Options options = new Options();
+        Option help = Option.builder("h").longOpt("help").required(false).hasArg(false).desc("Help options").build();
 
-			if (line.hasOption('e')) {
-				envFileName = line.getOptionValue("e");
-			} else {
-				logger.error("Provide enviroment location");
-				System.exit(1);
-			}
+        Option operation = Option.builder("o").longOpt("operation").required(true).hasArg(true)
+            .desc("Name of Operation : export  or deploy ").build();
 
-		} else {
-			logger.error("Provide proper type: fed or polenv");
-			System.exit(1);
-		}
+        Option url = Option.builder("s").longOpt("gatewayURL").required(true).hasArg(true)
+            .desc("Admin Node Manager URL").build();
 
+        Option username = Option.builder("u").longOpt("username").required(true).hasArg(true)
+            .desc("Admin Node Manager username").build();
 
-		if (operation.equalsIgnoreCase("export")) {
+        Option password = Option.builder("p").longOpt("password").required(true).hasArg(true)
+            .desc("Admin Node Manager password").build();
 
-			orchestrator.download(url, username, password, groupName, instanceName, type, fedFileName, polFileName,
-					envFileName);
-		} else if (operation.equalsIgnoreCase("deploy")) {
-			orchestrator.deploy(url, username, password, groupName, instanceName, type, fedFileName, polFileName,
-					envFileName);
-		} else {
-			logger.error("Provide valid operation name: possible values download or deploy");
-			System.exit(1);
-		}
+        Option groupName = Option.builder("g").longOpt("group").required(true).hasArg(true).desc("Domain group name")
+            .build();
 
-	}
+        Option instanceName = Option.builder("n").longOpt("instance").required(false).hasArg(true)
+            .desc("Domain instance name").build();
 
-	private static boolean checkForHelp(String[] args, Options options) throws ParseException {
+        Option fedFile = Option.builder("f").longOpt("fedFile").required(false).hasArg(true).desc("Federation File")
+            .build();
 
-		if (args.length == 0)
-			return true;
+        Option polFile = Option.builder("pol").longOpt("polFile").required(false).hasArg(true).desc("PolicyFile File")
+            .build();
 
-		for (String argument : args) {
-			if (argument.equals("-h") || argument.equals("--help")) {
-				return true;
-			}
-		}
-		return false;
-	}
+        Option envFile = Option.builder("e").longOpt("envFile").required(false).hasArg(true).desc("Environment File")
+            .build();
 
-	private static Options options() {
-		Options options = new Options();
-		Option help = Option.builder("h").longOpt("help").required(false).hasArg(false).desc("Help options").build();
+        Option type = Option.builder("t").longOpt("type").required(false).hasArg(true)
+            .desc("Possible values: fed, polenv").build();
 
-		Option operation = Option.builder("o").longOpt("operation").required(true).hasArg(true)
-				.desc("Name of Operation : export  or deploy ").build();
+        Option inSecure = Option.builder().longOpt("insecure").required(false).hasArg(false).desc("disable certificate and hostname verification").build();
 
-		Option url = Option.builder("s").longOpt("gatewayURL").required(true).hasArg(true)
-				.desc("Admin Node Manager URL").build();
+        options.addOption(operation);
+        options.addOption(url);
+        options.addOption(username);
+        options.addOption(password);
+        options.addOption(groupName);
+        options.addOption(instanceName);
 
-		Option username = Option.builder("u").longOpt("username").required(true).hasArg(true)
-				.desc("Admin Node Manager username").build();
+        options.addOption(fedFile);
+        options.addOption(polFile);
+        options.addOption(envFile);
+        options.addOption(help);
+        options.addOption(type);
+        options.addOption(inSecure);
+        return options;
+    }
 
-		Option password = Option.builder("p").longOpt("password").required(true).hasArg(true)
-				.desc("Admin Node Manager password").build();
-
-		Option groupName = Option.builder("g").longOpt("group").required(true).hasArg(true).desc("Domain group name")
-				.build();
-
-		Option instanceName = Option.builder("n").longOpt("instance").required(false).hasArg(true)
-				.desc("Domain instance name").build();
-
-		Option fedFile = Option.builder("f").longOpt("fedFile").required(false).hasArg(true).desc("Federation File")
-				.build();
-
-		Option polFile = Option.builder("pol").longOpt("polFile").required(false).hasArg(true).desc("PolicyFile File")
-				.build();
-
-		Option envFile = Option.builder("e").longOpt("envFile").required(false).hasArg(true).desc("Environment File")
-				.build();
-
-		Option type = Option.builder("t").longOpt("type").required(false).hasArg(true)
-				.desc("Possible values: fed, polenv").build();
-
-		options.addOption(operation);
-		options.addOption(url);
-		options.addOption(username);
-		options.addOption(password);
-		options.addOption(groupName);
-		options.addOption(instanceName);
-
-		options.addOption(fedFile);
-		options.addOption(polFile);
-		options.addOption(envFile);
-		options.addOption(help);
-		options.addOption(type);
-		return options;
-	}
-
-	private static void usage() {
-		new HelpFormatter().printHelp("Gateway Deployment", options());
-	}
+    private static void usage() {
+        new HelpFormatter().printHelp("Gateway Deployment", options());
+    }
 
 }

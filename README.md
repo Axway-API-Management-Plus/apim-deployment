@@ -15,18 +15,12 @@ CLI utility uses APIM product APIs (API Gateway API - http://apidocs.axway.com/s
 
 ## Prerequisites
 
-1. Axway AMPLIFY API Management 7.5.3 or above
-2. JDK 1.8.0_xxx
+1. Axway AMPLIFY API Management 7.7.x 
+2. JDK 1.11.0_xxx
 3. Apache Maven 3.3.9 or above 
 4. Trust API Gateway Admin Node manager domain certificate
 
-- Download ANM certificate from browser
-- Import the certificate to java key store
-	
-	
-	```bash
-	keytool -import -trustcacerts -keystore "C:\Program Files\Java\jdk1.8.0_111\jre\lib\security\cacerts" -storepass changeit -alias domain -file c:\Users\rnatarajan\Desktop\domain.cer -noprompt
-	```	
+
 
 ### Build the project 
 
@@ -80,38 +74,19 @@ java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1
 ```
 
 ### Deploy a FED file to a specific Gateway
-For example,
-- for Windows
 
-```bash
-java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --instance=server1 --fedFile=D:\\api\\finance.fed --type=fed
-```
-- and for Linux
 ```bash
 java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=Finance --instance=server1 --fedFile=/home/axway/finance.fed --type=fed
 ```
 
 ### Deploy the POL and ENV files to all Gateways
-For example,
-- for Windows
 
-```bash
-java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --polFile=D:\\api\\finance.pol --envFile=D:\\api\\finance.env --type=polenv
-```
-- and for Linux
 
 ```bash
 java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=Finance --polFile=/home/axway/finance.pol --envFile=/home/axway/finance.env --type=polenv
 ```
 
 ### Deploy the POL and ENV files to a specific Gateway
-For example,
-- for Windows:
-
-```bash
-java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=finance --instance=server1 --polFile=D:\\api\\finance.pol --envFile=D:\\api\\finance.env --type=polenv
-```
-- and for Linux:
 
 ```bash
 java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=Finance --instance=server1 --polFile=/home/axway/finance.pol --envFile=/home/axway/finance.env --type=polenv
@@ -131,6 +106,16 @@ Example
 java -jar -DproxyHost=10.10.2.2 -DproxyPort=8080 --proxyProtocol=https apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar -o=deploy -s=https://localhost:8090 -u=admin -p=changeme -g=finance -n=server1 -f=D:\\api\\finance.fed -t=fed
 ```
 
+### Disable certificate and host name verification
+
+- Add a parameter --insecure
+
+Example
+
+```bash
+java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=Finance --polFile=/home/axway/finance.pol --envFile=/home/axway/finance.env --type=polenv --insecure
+
+```
 
 ## Contributing
 Please read [Contributing.md](https://github.com/Axway-API-Management-Plus/Common/blob/master/Contributing.md) for details on our code of conduct, and the process for submitting pull requests to us.

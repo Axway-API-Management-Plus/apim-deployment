@@ -4,10 +4,6 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-
 public abstract  class AbstractGatewayMojo extends AbstractMojo {
 
 	@Parameter
@@ -39,13 +35,17 @@ public abstract  class AbstractGatewayMojo extends AbstractMojo {
 	@Parameter
 	protected String type;
 
-	@Inject
+
+    @Parameter
+    protected boolean insecure;
+
+
 	protected GatewayDeployment gatewayDeployment;
 
 	protected Log logger = getLog();
-	
+
 	protected void setup(Object obj){
-		Injector injector = Guice.createInjector(new DeploymentModule());
-		injector.injectMembers(obj);
+        AxwayClient axwayClient = AxwayClient.getInstance();
+        gatewayDeployment = new GatewayDeployment(axwayClient);
 	}
 }

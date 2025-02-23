@@ -6,18 +6,13 @@
     <parent>
         <groupId>com.axway.apim</groupId>
         <artifactId>apim-deployment-project</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
     </parent>
     <groupId>com.axway.apim</groupId>
     <artifactId>core</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <name>core</name>
     <url>http://maven.apache.org</url>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -28,32 +23,24 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-            <version>2.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.32</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.32</version>
         </dependency>
         <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>5.0.1</version>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -61,27 +48,4 @@
             <version>4.13.2</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <!--        <repository>-->
-        <!--            <id>axwayapim</id>-->
-        <!--            <url>https://pkgs.dev.azure.com/axwayapim/_packaging/axwayapim/maven/v1</url>-->
-        <!--            <releases>-->
-        <!--                <enabled>true</enabled>-->
-        <!--            </releases>-->
-        <!--            <snapshots>-->
-        <!--                <enabled>true</enabled>-->
-        <!--            </snapshots>-->
-        <!--        </repository>-->
-
-
-    </repositories>
-    <distributionManagement>
-        <!--        <repository>-->
-        <!--            <id>axwayapim</id>-->
-        <!--            <url>https://pkgs.dev.azure.com/axwayapim/_packaging/axwayapim/maven/v1</url>-->
-        <!--        </repository>-->
-
-    </distributionManagement>
-
 </project>

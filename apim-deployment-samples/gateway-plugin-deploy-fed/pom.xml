@@ -3,10 +3,10 @@
   <parent>
     <groupId>com.axway.apim</groupId>
     <artifactId>apim-deployment-samples</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
   </parent>
   <artifactId>gateway-plugin-deploy-fed</artifactId>
-  
+
  <build>
 		<plugins>
 			<plugin>
