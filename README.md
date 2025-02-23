@@ -16,24 +16,24 @@ CLI utility uses APIM product APIs (API Gateway API - http://apidocs.axway.com/s
 ## Prerequisites
 
 1. Axway AMPLIFY API Management 7.7.x 
-2. JDK 1.11.0_xxx
+2. JDK 11
 3. Apache Maven 3.3.9 or above 
-4. Trust API Gateway Admin Node manager domain certificate
-
 
 
 ### Build the project 
 
-	```bash
-	$mvn clean install -Dmaven.test.skip=true
-	```
+```bash
+$mvn clean install -Dmaven.test.skip=true
+```
+
 - Ignore maven plugin test project
 
+Windows
 ```bash
 $mvn clean install -Dmaven.test.skip=true -pl !apim-deployment-samples\gateway-plugin-deploy-fed,!apim-deployment-samples\gateway-plugin-deploy-polenv,!apim-deployment-samples\gateway-plugin-export-fed,!apim-deployment-samples\gateway-plugin-export-polenv
 ```
-Example for Linux:
 
+Linux
 ```bash
 #mvn clean install -Dmaven.test.skip=true -pl \!apim-deployment-samples/gateway-plugin-deploy-fed,\!apim-deployment-samples/gateway-plugin-deploy-polenv,\!apim-deployment-samples/gateway-plugin-export-fed,\!apim-deployment-samples/gateway-plugin-export-polenv
 ```

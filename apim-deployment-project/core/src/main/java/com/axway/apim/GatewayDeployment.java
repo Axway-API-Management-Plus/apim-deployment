@@ -182,8 +182,6 @@ public class GatewayDeployment extends AbstractDeployment {
 
 
     public void deploy(String archiveId, String instanceId, String apiGatewayURL) throws IOException, URISyntaxException, ParseException, ServerException {
-
-        // https://localhost:8090/api/router/service/instance-2/api/configuration?archiveId=480c6bbc-c2ed-4ff2-b649-7bd0b54ddd15
         LOGGER.info("Starting deployment");
         URI uri = new URIBuilder(apiGatewayURL).setPath("/api/router/service/" + instanceId + "/api/configuration").setParameter("archiveId", archiveId).build();
         LOGGER.info("Deploy URL : {}", uri);
@@ -192,7 +190,9 @@ public class GatewayDeployment extends AbstractDeployment {
         String reason = response.getReasonText();
         if (status >= 300) {
             LOGGER.error("Status code {} Reason {} ", status, reason);
-            LOGGER.info("Response from Server : {}", response.getBody());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Response from Server : {}", response.getBody());
+            }
             throw new ServerException(reason);
         }
         LOGGER.info("deployment completed");
