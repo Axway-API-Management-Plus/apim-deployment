@@ -79,6 +79,13 @@ java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1
 java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=Finance --instance=server1 --fedFile=/home/axway/finance.fed --type=fed
 ```
 
+### Deploy a FED directory to a specific Gateway
+
+```bash
+java -jar apim-deployment-project/gateway-standalone/target/gateway-standalone-1.0.0.jar --operation=deploy --gatewayURL=https://localhost:8090 --username=admin --password=changeme --group=Finance --instance=server1 --fedDir=/home/axway/finance --type=fed
+
+```
+
 ### Deploy the POL and ENV files to all Gateways
 
 

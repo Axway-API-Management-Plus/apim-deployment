@@ -35,6 +35,7 @@ public class Main {
         boolean inSecure = line.hasOption("insecure");
 
         String fedFileName = null;
+        String fedDir = null;
         String polFileName = null;
         String envFileName = null;
         String instanceName = null;
@@ -46,7 +47,9 @@ public class Main {
         if (type.equalsIgnoreCase("fed")) {
             if (line.hasOption('f')) {
                 fedFileName = line.getOptionValue("f");
-            } else {
+            } else if(line.hasOption('d')){
+                fedDir = line.getOptionValue("d");
+            }else {
                 LOGGER.error("Provide fed location");
                 System.exit(1);
             }
@@ -78,7 +81,7 @@ public class Main {
                 envFileName, inSecure);
         } else if (operation.equalsIgnoreCase("deploy")) {
             orchestrator.deploy(url, username, password, groupName, instanceName, type, fedFileName, polFileName,
-                envFileName, inSecure);
+                envFileName, inSecure, fedDir);
         } else {
             LOGGER.error("Provide valid operation name: possible values download or deploy");
             System.exit(1);
@@ -124,6 +127,9 @@ public class Main {
         Option fedFile = Option.builder("f").longOpt("fedFile").required(false).hasArg(true).desc("Federation File")
             .build();
 
+        Option fedDir = Option.builder("d").longOpt("fedDir").required(false).hasArg(true).desc("Federation directory")
+            .build();
+
         Option polFile = Option.builder("pol").longOpt("polFile").required(false).hasArg(true).desc("PolicyFile File")
             .build();
 
@@ -148,6 +154,7 @@ public class Main {
         options.addOption(help);
         options.addOption(type);
         options.addOption(inSecure);
+        options.addOption(fedDir);
         return options;
     }
 

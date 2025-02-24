@@ -1,11 +1,14 @@
 package com.axway.apim;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.UUID;
+import java.util.jar.Manifest;
 
 import static com.axway.apim.Constants.*;
 
@@ -41,7 +44,7 @@ public class Orchestrator {
     }
 
     public void deploy(String url, String username, String password, String groupName, String instanceName, String type,
-                       String fedFileName, String polFileName, String envFileName, boolean insecure) {
+                       String fedFileName, String polFileName, String envFileName, boolean insecure, String fedDir) {
         try {
             String archiveId = null;
             gatewayDeployment.init(url, username, password, insecure);
@@ -49,6 +52,14 @@ public class Orchestrator {
             List<String> servers = gatewayDeployment.getServerLists(url, instanceName, phyGroupName);
             if (type.equalsIgnoreCase("fed")) {
 
+                if (fedFileName == null && fedDir != null) {
+                    // Handle fed project
+                    Archive archive = new Archive();
+                    String uuidStr = UUID.randomUUID().toString();
+                    fedFileName = uuidStr + ".fed";
+                    Manifest manifest = archive.createManifest(uuidStr);
+                    archive.createFed(uuidStr, manifest, fedFileName, new File(fedDir));
+                }
                 archiveId = gatewayDeployment.uploadFed(phyGroupName, FED_ATTACHMENT_NAME, url, fedFileName,
                     servers);
 
